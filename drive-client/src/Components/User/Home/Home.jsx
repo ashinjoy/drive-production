@@ -1,49 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { TfiLocationPin, TfiFlag } from "react-icons/tfi";
-import { FaLocationArrow } from "react-icons/fa6";
+import React, { useEffect} from "react";
 import { motion } from "framer-motion";
 import { reset } from "../../../Features/User/userSlice";
 import { useDispatch } from "react-redux";
-import { geoCodeService } from "../../../Features/User/userService";
 import HomeCards from "./HomeCards";
 
 function Home() {
   const dispatch = useDispatch();
-  const [pickupLocation, setPickupLocation] = useState("");
-  const [dropLocation, setDropLocation] = useState("");
-  const [showSuggestion, setShowSuggestion] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      const success = async (position) => {
-        const response = await geoCodeService(
-          position?.coords?.longitude,
-          position?.coords?.latitude
-        );
-        console.log(response.data);
-
-        setPickupLocation(response.data.data);
-
-        return position;
-      };
-      const error = (err) => {
-        console.log("err", err);
-      };
-      navigator.geolocation.getCurrentPosition(success, error, {
-        enableHighAccuracy: true,
-        maximumAge: 0,
-      });
-    }
-  };
-
-  const handleDropOff = (e) => {
-    setDropLocation(e.target.value);
-  };
-
-  const handleSuggestions = () => {
-    showSuggestion(true);
-  };
 
   useEffect(() => {
     dispatch(reset());

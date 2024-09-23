@@ -22,7 +22,11 @@ function HomeCards({ type }) {
         className="mt-auto px-4 py-2 bg-yellow-500 text-white font-semibold rounded-md shadow hover:bg-blue-600 transition duration-200"
         aria-label="Join As a Driver"
       >
-      { type == 'driver' ? 'Join As a Driver' : type == 'user' ? 'Request a Ride' : 'Start Ride' }
+        {type == "driver"
+          ? "Join As a Driver"
+          : type == "user"
+          ? "Request a Ride"
+          : "Start Ride"}
       </button>
     </div>
   );

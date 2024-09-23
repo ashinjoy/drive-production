@@ -6,7 +6,11 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { AnimatePresence } from "framer-motion";
 
 import { useSocket } from "../../Hooks/socket";
-import { resetTripDetails, setTripData, setTripStatus } from "../../Features/Trip/tripSlice";
+import {
+  resetTripDetails,
+  setTripData,
+  setTripStatus,
+} from "../../Features/Trip/tripSlice";
 import NearByPickup from "../User/Notification/NearByPickup";
 import UserAccountMenu from "../User/UserAccountMenu/UserAccountMenu";
 import UserNavBarDrawer from "./UserNavBarDrawer";
@@ -14,13 +18,11 @@ import UserNavBarDrawer from "./UserNavBarDrawer";
 function UserNavbar() {
   const { user, token } = useSelector((state) => state.user);
   const { tripDetail } = useSelector((state) => state.trip);
-  const dispatch = useDispatch();
-  const [showNotification, setShowNofication] = useState(false);
-  const [notifyData, setNotifyData] = useState("");
   const [showMenu, setShowMenu] = useState(false);
-  const [navDrawer,setNavDrawer] = useState(false)
-  const [rideComplete,setRideComplete] =useState(false)
-  const [rideCompleteData,setRideCompleteData] = useState(null)
+  const [navDrawer, setNavDrawer] = useState(false);
+  const [rideComplete, setRideComplete] = useState(false);
+  const [rideCompleteData, setRideCompleteData] = useState(null);
+  const dispatch = useDispatch();
   const userId = user?.id;
 
   const { socket } = useSocket();
@@ -45,14 +47,13 @@ function UserNavbar() {
     }
 
     const handleRideStartSocket = (data) => {
-      dispatch(setTripStatus())
+      dispatch(setTripStatus());
     };
 
     const handleRideEndSocket = (data) => {
       dispatch(resetTripDetails());
-      setRideComplete(true)
-      setRideCompleteData(data)
-
+      setRideComplete(true);
+      setRideCompleteData(data);
     };
     socket?.on("ride-start", handleRideStartSocket);
     socket?.on("ride-complete", handleRideEndSocket);
@@ -64,7 +65,7 @@ function UserNavbar() {
   }, [socket, tripDetail]);
 
   const toggleMobileMenu = () => {
-    setNavDrawer(!navDrawer)
+    setNavDrawer(!navDrawer);
   };
 
   return (
@@ -84,12 +85,12 @@ function UserNavbar() {
         >
           Home
         </NavLink>
-        <NavLink
+       {  !token && <NavLink
           to="/driver/signup"
           className="text-base font-medium leading-tight hover:text-yellow-500 transition-colors"
         >
           Drive
-        </NavLink>
+        </NavLink>}
         <NavLink
           to="/search-ride"
           className="text-base font-medium leading-tight hover:text-yellow-500 transition-colors"
@@ -122,7 +123,7 @@ function UserNavbar() {
           </NavLink>
         )}
       </div>
-{navDrawer && <UserNavBarDrawer/>}
+      {navDrawer && <UserNavBarDrawer />}
       <div className="md:hidden flex items-center mr-6">
         <button onClick={toggleMobileMenu}>
           <svg
@@ -149,9 +150,6 @@ function UserNavbar() {
             rideCompleteData={rideCompleteData}
           />
         )}
-        {
-
-        }
       </AnimatePresence>
 
       {showMenu && <UserAccountMenu />}
