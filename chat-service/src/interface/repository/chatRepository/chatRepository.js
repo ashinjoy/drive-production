@@ -1,5 +1,5 @@
-import { chatModel } from "../../database/schema/ChatSchema/chatSchema.js"
-import { messageModel } from "../../database/schema/ChatSchema/messageSchema.js"
+import { chatModel } from "../../database/schema/chatSchema/chatSchema.js"
+import { messageModel } from "../../database/schema/chatSchema/messageSchema.js"
 export class ChatRepository{
     constructor(){}
 
