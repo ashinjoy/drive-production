@@ -17,6 +17,8 @@ export class KafkaClient {
   async produceMessage(topic,messages) {
     try {
       await this.producer.connect();
+      console.log('connected to cluster');
+      
       await this.producer.send({
         topic: topic,
         messages: [ 
@@ -40,6 +42,7 @@ export class KafkaClient {
         throw new Error('Cannot Connect To Topic')
       }
         await this.consumer.connect()
+        console.log('connected to kafka cluster succe======================>')
         await this.consumer.subscribe({ topics: topics, fromBeginning: true })
         await this.consumer.run({
             eachMessage: async ({ topic, partition, message }) => {

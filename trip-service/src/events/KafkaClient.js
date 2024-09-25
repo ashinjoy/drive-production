@@ -4,7 +4,11 @@ export class KafkaClient {
   constructor() {
     this.kafka = new Kafka({
       clientId: "trip-service",
-      brokers: ["127.0.0.1:9092"],
+      brokers: [
+        "kafka-0.kafka-headless.kafka.svc.cluster.local:9092",
+        "kafka-1.kafka-headless.kafka.svc.cluster.local:9092",
+        "kafka-2.kafka-headless.kafka.svc.cluster.local:9092"
+      ],
     });
     this.producer = this.kafka.producer();
     this.consumer = this.kafka.consumer({ groupId: "trip-service" });
@@ -13,6 +17,8 @@ export class KafkaClient {
   async produceMessage(topic,messages) {
     try {
       await this.producer.connect();
+      console.log("connected to kafka cluster");
+      
       await this.producer.send({
         topic: topic,
         messages: [ 
@@ -36,6 +42,8 @@ export class KafkaClient {
         throw new Error('Cannot Connect To Topic')
       }
         await this.consumer.connect()
+        console.log("connected  to kafka cluster successfully ==============>");
+        
         await this.consumer.subscribe({ topics: topics, fromBeginning: true })
         await this.consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
