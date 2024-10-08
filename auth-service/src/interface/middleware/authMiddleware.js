@@ -7,9 +7,7 @@ import {
 
 export class AuthHandler {
   static async isUserLogin(req, res, next) {
-    try {
-      console.log('inside the authhandler middlware');
-      
+    try { 
       const userRepository = new MongoUserRepository();
       if (!req.headers["Authorization"] && !req.headers["authorization"]) {
         const error = new Error();
@@ -40,8 +38,6 @@ export class AuthHandler {
         throw error;
       }
       const isUservalid = await userRepository.findUserById(decodeToken.id);
-      console.log('isUserValid',isUservalid);
-      
 
       if (!isUservalid || isUservalid.isBlocked) {
         const error = new Error();
@@ -135,15 +131,9 @@ export class AuthHandler {
         error.message = "You are not Authorized";
         throw error;
       }
-      const isAdminvalid = await adminRepository.findAdminById(decodeToken.id);
-
-      // if (!isAdminvalid || isAdminvalid.isBlocked) {
-      //   const error = new Error();
-      //   error.status = 403;
-      //   error.status = "Not Authorized";
-      //   throw error
-      // }
-
+      console.log(decodeToken);
+      
+       await adminRepository.findAdminById(decodeToken.id);
       next();
     } catch (error) {
       console.error(error);

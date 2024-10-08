@@ -30,11 +30,11 @@ export const getDailyFilters = (now) => {
 
 export const getWeeklyFilters = (now) => {
   const dailyDateRange = [];
-  const currentTime = new Date(now);
+  
   const startTime = new Date(now);
   startTime.setDate(startTime.getDate() - 7);
   startTime.setHours(0, 0, 0, 0);
-  console.log("startTime", startTime);
+ 
   dailyDateRange.push({
     label: "week4",
     startTime: new Date(startTime),
@@ -54,13 +54,13 @@ export const getWeeklyFilters = (now) => {
     });
     startTime.setDate(startTime.getDate() - 7);
   }
-  console.log("date in week", dailyDateRange);
+ 
   return dailyDateRange
 };
 
 export const getMonthlyFilter = (now) => {
   const dailyDateRange = [];
-  const currentTime = new Date(now);
+  
   const startTime = new Date(now);
   startTime.setMonth(startTime.getMonth());
   startTime.setDate(1);
@@ -96,7 +96,7 @@ export const getMonthlyFilter = (now) => {
 
 export const getYearlyFilter = (now) => {
   const dailyDateRange = [];
-  const currentTime = new Date(now);
+  
   const startTime = new Date(now);
   startTime.setFullYear(startTime.getFullYear());
   startTime.setMonth(0);
@@ -127,6 +127,6 @@ export const getYearlyFilter = (now) => {
       endTime: endYear,
     });
   }
-  console.log("skdk", dailyDateRange);
+  
   return dailyDateRange
 };

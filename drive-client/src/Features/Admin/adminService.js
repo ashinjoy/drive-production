@@ -5,9 +5,9 @@ export const adminLoginService = async (formdata) => {
   return await axios.post("auth/admin/login", formdata);
 };
 
-export const getDriverDetailService = async () => {
+export const getDriverDetailService = async (data) => {
   console.log("enterd get req");
-  return adminPrivate.get("auth/admin/getAllDrivers");
+  return adminPrivate.get(`auth/admin/getAllDrivers?page=${data}`);
 };
 
 export const blockUnblockDriverService = async (driverId) => {
@@ -30,8 +30,8 @@ export const approveDriverProfileUpdateService =async(driverId)=>{
   return adminPrivate.patch(`/auth/admin/verify-driverProfileUpdate/${driverId}/approval`)
 }
 
-export const getUserDetailService =async(driverId)=>{
-  return adminPrivate.get(`/auth/admin/getAllUsers`)
+export const getUserDetailService =async(data)=>{
+  return adminPrivate.get(`/auth/admin/getAllUsers?page=${data}`)
 }
 
 export const blockUnblockUserService = async(userId)=>{

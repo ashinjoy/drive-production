@@ -4,9 +4,15 @@ export class DriverDetailsController {
       new dependencies.useCase.GetDriverDetailsUseCase(dependencies);
   }
   async getDriverDetails(req, res, next) {
-    const { driverId } = req.params;
+    try {
+      const { driverId } = req.params;
     const driverDetails = await this.getDriverDetailUseCase.execute(driverId);
-    console.log(driverDetails);
     res.status(200).json({ driverDetails: driverDetails, message: "sucess" });
+    } catch (error) {
+      console.error(error);
+      next(error)
+      
+    }
+    
   }
 }

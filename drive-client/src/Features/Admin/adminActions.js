@@ -33,7 +33,7 @@ export const getDriverDetails = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       console.log("enterd list");
-      const response = await getDriverDetailService();
+      const response = await getDriverDetailService(data);
       console.log("resp", response.data);
       return response.data;
     } catch (error) {
@@ -99,7 +99,7 @@ export const getUserDetails = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       console.log("enterd list");
-      const response = await getUserDetailService();
+      const response = await getUserDetailService(data);
       console.log("resp", response.data);
       return response.data;
     } catch (error) {

@@ -4,7 +4,7 @@ import DriverNavBar from '../../../Components/Navbar/DriverNavBar'
 function Approval() {
   return (
     <>
-
+<DriverNavBar/>
 <div className="flex h-screen items-center justify-center">
   <div className="flex flex-col items-center">
     <div className="w-[300px] h-[300px] rounded-full border border-gray-300 flex items-center justify-center bg-gradient-to-r from-gray-100 to-gray-200 shadow-md">

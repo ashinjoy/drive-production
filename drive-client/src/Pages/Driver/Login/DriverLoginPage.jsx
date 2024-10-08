@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import UserNavbar from "../../../Components/Navbar/UserNavbar";
 import { useDispatch, useSelector } from "react-redux";
 import { driverLogin } from "../../../Features/Driver/driverActions";
@@ -16,8 +15,6 @@ function DriverLoginPage() {
   const { driver, message, error } = useSelector((state) => state.driver);
   const navigate = useNavigate();
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const passwordRegex = /^.{8,}$/;
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const loginDetails = {
@@ -40,7 +37,7 @@ function DriverLoginPage() {
     }
   };
   useEffect(() => {
-    if (message == "Logged In Successfully") {  
+    if (message === "Logged In Successfully") {  
       socket?.emit('driver-connected',driver.id)
       dispatch(reset())
       navigate("/driver/home");
@@ -104,10 +101,6 @@ function DriverLoginPage() {
                 >
                   Login
                 </button>
-                {/* <button type="button" className="w-full flex items-center gap-3 justify-center border border-gray-300 rounded-lg p-2.5 bg-white hover:bg-yellow-50 transition duration-200 focus:ring-4 focus:outline-none focus:ring-yellow-300" >
-            <FcGoogle class="w-6 h-6 mr-2" />
-            <span class="font-medium text-sm text-gray-700">Sign Up with Google</span>
-          </button> */}
               </form>
             </div>
           </div>

@@ -7,6 +7,7 @@ export class DriverRepository {
       return driver.save();
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
   async findDriverbyId(id) {
@@ -14,96 +15,122 @@ export class DriverRepository {
       return await driverModel.findById({ _id: id }, { password: 0 });
     } catch (error) {
       console.error(error);
+      throw error
+
     }
   }
   async findDriverByEmail(email) {
     try {
-      console.log("trepo", email);
-      const data = await driverModel.findOne({ email: email }).lean();
-      console.log("after reading froom db", data);
-      return data;
+      return await driverModel.findOne({ email: email }).lean();
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
   async findDriverByPhone(phone) {
     try {
-      return await driverModel.findOne({phone});
+      return await driverModel.findOne({ phone });
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
   async findDriverByIdAndUpdate(id, detailsToUpdate) {
-    return await driverModel
+    try {
+      return await driverModel
       .findByIdAndUpdate({ _id: id }, { $set: detailsToUpdate }, { new: true })
       .lean();
+    } catch (error) {
+      console.error(error);
+      throw error
+      
+    }
+  
   }
 
   async getDriverByIdAndUpdate(id, dataToUpdate) {
-    console.log("data to update", dataToUpdate);
-    return await driverModel.findByIdAndUpdate(
-      { _id: id },
-      { $set: dataToUpdate },
-      { new: true }
-    );
-  }
-  async getAllDrivers(filter,page,limit) {
     try {
-      console.log('f',filter,page,limit);
-     const result =  await driverModel.find(filter, { password: 0 });
-     console.log(result);
-     return result
+      return await driverModel.findByIdAndUpdate(
+        { _id: id },
+        { $set: dataToUpdate },
+        { new: true }
+      );
     } catch (error) {
       console.error(error);
-    }
-        
-      }
-
-  async findDriverByIdAndApprove(driverId) {
-    return await driverModel.findByIdAndUpdate(
-      { _id: driverId },
-      { $set: { isAccepted: true } },
-      {new:true}
-    );
-  }
-
-  async getTotalDocs(){
-    try {
-      const  totalDocs = await driverModel.countDocuments()
-      return totalDocs
-    } catch (error) {
+      throw error
       
     }
-  }
-
-  async sortDriversRegistrationByDate(dateRanges){
-    console.log(dateRanges);
     
-const facetObj = {}
-    dateRanges.forEach((element,index) => {
-      const key = element.label
-      facetObj[key] =[ {
-        $match:{
-          createdAt:{
-            $gte:element.startTime,
-            $lte:element.endTime
-          }
-        }
-      },{
-        $count:"totalNewUsers"
-      }
-      ]
-    });
-return  await driverModel.aggregate([{
-  $facet:facetObj
-  }])
+  }
+  async getAllDrivers(search, page) {
+    try {
+      const result = await driverModel
+        .find({ name: new RegExp(search, "i") }, { password: 0 })
+        .skip((page - 1) * 7)
+        .limit(7);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
-  
-  
+  async findDriverByIdAndApprove(driverId) {
+    try {
+      return await driverModel.findByIdAndUpdate(
+        { _id: driverId },
+        { $set: { isAccepted: true } },
+        { new: true }
+      );
+    } catch (error) {
+      console.error(error);
+      throw error
+      
+    }
+    
+  }
+
+  async getTotalDocs(search) {
+    try {
+      const totalDocs = await driverModel.countDocuments({
+        name: new RegExp(search, "i"),
+      });
+      return totalDocs;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async sortDriversRegistrationByDate(dateRanges) {
+    try {
+      const facetObj = {};
+      dateRanges.forEach((element) => {
+        const key = element.label;
+        facetObj[key] = [
+          {
+            $match: {
+              createdAt: {
+                $gte: element.startTime,
+                $lte: element.endTime,
+              },
+            },
+          },
+          {
+            $count: "totalNewUsers",
+          },
+        ];
+      });
+      return await driverModel.aggregate([
+        {
+          $facet: facetObj,
+        },
+      ]);
+    } catch (error) {
+      console.error(error);
+      throw error
+      
+    }
+   
+  }
 }
-
-  
-
-
-

@@ -4,13 +4,11 @@ export class SaveContactsController{
     }
     async saveContacts(req,res,next){
         try {
-            console.log(req.body);
-            
           const saveEmergencyContacts =   await this.saveContactsUseCase.execute(req.body)
-          console.log("saveEmergency",saveEmergencyContacts);
           res.status(201).json({userDetail:saveEmergencyContacts})
         } catch (error) {
             console.error(error)
+            next(error)
         }
     }
 }

@@ -4,25 +4,8 @@ export class GetAllUserUseCase {
   }
   async execute(search, page) {
     try {
-      console.log("njn evide");
-      const query = {};
-      console.log(query);
-      const searchResult =
-        search != undefined ? new RegExp(search, "i") : new RegExp(".*", "i");
-      console.log("search", searchResult);
-      const currentPage = page != undefined ? page : 1;
-      query.name = searchResult;
-      console.log(query);
-      const limit = 10;
-      const allUsers = await this.userRepository.getAllUsers(
-        query,
-        currentPage,
-        limit
-      );
-      const totalPages = search
-        ? this.userRepository.getTotalDocs()
-        : allUsers.length;
-        console.log(allUsers);
+      const allUsers = await this.userRepository.getAllUsers(search,page)
+      const totalPages = await this.userRepository.getTotalDocs(search)
       return { allUsers, totalPages };
     } catch (error) {
         console.log(error);

@@ -15,7 +15,6 @@ export class KafkaClient {
   }
   async produceMessage(topic,messages) {
     try {
-      console.log(topic);
       await this.producer.connect();
       await this.producer.send({
         topic: topic,
@@ -28,17 +27,20 @@ export class KafkaClient {
       await this.producer.disconnect()
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
 
   async consumeMessages(topic){
     try {
-        await consumer.connect()
-        await consumer.subscribe({ topic: topic, fromBeginning: true })
-        await consumer.run({
+        await this.consumer.connect()
+        await this.consumer.subscribe({ topic: topic, fromBeginning: true })
+        await this.consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
               console.log({
-                value: message.value.toString()
+                value: message.value.toString(),
+                topic:topic,
+                partition:partition
               })
             },
           })

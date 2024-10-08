@@ -52,12 +52,11 @@ function AdminLogin() {
       }, 1000);
     }
   }, [error, success]);
-
   return (
     <>
-      <section className="bg-gray-50 bg-gradient-to-r from-white to-yellow-50 h-screen">
+      <section className="bg-gray-50 h-screen">
         <div className="flex flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
-          <div className="w-full bg-white rounded-lg shadow-lg md:mt-16 sm:max-w-md xl:p-0 border border-yellow-300 bg-gradient-to-t from-white to-yellow-100">
+          <div className="w-full bg-yellow-50 rounded-lg shadow-lg md:mt-16 sm:max-w-md xl:p-0 border ">
             <div className="p-6 space-y-6 md:space-y-8 sm:p-8">
               <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 dark:text-black md:text-3xl">
                 Admin Login

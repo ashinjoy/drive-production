@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 import { reset } from "../../../Features/User/userSlice";
 
 function UserProfilePage() {
-  // const imgUploadRef = useRef(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -18,12 +17,10 @@ function UserProfilePage() {
   const [isChange, setChange] = useState(false);
 
   const dispatch = useDispatch();
-  const { user, message,error } = useSelector((state) => state.user);
+  const { user, message } = useSelector((state) => state.user);
   const profileImgRef = useRef(null);
 
   useEffect(() => {
-    console.log('udr changes');
-    
     setEmail(user?.email);
     setName(user?.name);
     setPhone(user?.phone);
@@ -96,9 +93,7 @@ function UserProfilePage() {
       dispatch(reset())
       return
     }
-    // if(error){
-    //   toast(error)
-    // }
+
   },[message])
 
   return (
@@ -232,8 +227,6 @@ function UserProfilePage() {
           </div>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

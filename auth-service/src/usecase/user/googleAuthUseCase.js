@@ -1,11 +1,11 @@
 import axios from "axios";
 import { createAccessToken, createRefreshToken } from "../../utils/jwt.js";
 import { KafkaClient } from "../../events/KafkaClient.js";
-import { TOPIC ,USER_CREATED } from "../../events/config.js";
+import { TOPIC, USER_CREATED } from "../../events/config.js";
 export class GoogleAuthUseCase {
   constructor(dependencies) {
     this.userRepository = new dependencies.repository.MongoUserRepository();
-    this.kafka = new KafkaClient()
+    this.kafka = new KafkaClient();
   }
   async execute(token) {
     try {
@@ -64,21 +64,20 @@ export class GoogleAuthUseCase {
           isProfileComplete: userCreated.isProfileComplete,
         };
         const userDatatoPublish = {
-          _id:userCreated._id,
+          _id: userCreated._id,
           email: userCreated.email,
           phone: userCreated.phone,
           isBlocked: userCreated.isBlocked,
           isVerified: userCreated.isVerified,
           isProfileComplete: userCreated.isProfileComplete,
-          authType:userCreated.authType,
-          createdAt:userCreated.createdAt,
-          profileImg:userCreated.profileImg
-        }
-        this.kafka.produceMessage(TOPIC,{
-          type:USER_CREATED,
-          value: JSON.stringify(userDatatoPublish)
-        })
-        
+          authType: userCreated.authType,
+          createdAt: userCreated.createdAt,
+          profileImg: userCreated.profileImg,
+        };
+        this.kafka.produceMessage(TOPIC, {
+          type: USER_CREATED,
+          value: JSON.stringify(userDatatoPublish),
+        });
       }
 
       const accessToken = await createAccessToken({ ...data, role: "USER" });
@@ -89,8 +88,9 @@ export class GoogleAuthUseCase {
         accessToken,
         refreshToken,
       };
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error(error);
+      throw error;
     }
   }
 }

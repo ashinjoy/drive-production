@@ -2,31 +2,40 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FcSearch } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-// import useSearchDebounce from "../../Hooks/useSearchDebounce";
 import AdminNavbar from "../../Components/Navbar/AdminNavbar";
 import AdminSidebar from "../../Components/Navbar/AdminSidebar";
+import  Pagination  from '@mui/material//Pagination'
+
 import {
   blockUnblockDriver,
-  getDriverDetails,
-  searchDrivers
+  getDriverDetails
 } from "../../Features/Admin/adminActions";
 
 function DriverList() {
   const dispatch = useDispatch();
   const [search,setSearch] = useState()
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(1)
+  const handlePageChange = (evt,value)=>{
+    setCurrentPage(value)
+  }
   // const debouncedSearch = useSearchDebounce(searchDrivers)  
-  const { driverData, adminData } = useSelector((state) => state.admin);
+  const { driverData,totalDocs} = useSelector((state) => state.admin);
+  
 
   useEffect(() => {
-    dispatch(getDriverDetails());
-  }, []);
+    dispatch(getDriverDetails(currentPage));
+  }, [currentPage]);
+
+  useEffect(()=>{
+    setTotalPages(Math.ceil(totalDocs/7))
+  },[totalDocs])
   const handleBlockUnBlock = (driverId) => {
     dispatch(blockUnblockDriver(driverId))
   };
 
-  const handleSearch = () => {
-    
-  };
+  
+
 
   return (
     <>
@@ -37,24 +46,7 @@ function DriverList() {
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">Drivers List</h1>
             <div className="w-1/3 h-10 flex">
-              <form className="flex w-full h-full">
-                <input
-                  type="search"
-                  name=""
-                  id=""
-                  value={search}
-                  onChange={(e)=>setSearch(e.target.value)}
-                  className="outline-none rounded-l-lg border-2 border-black w-full h-full px-3"
-                  placeholder="Search Here ...."
-                  onKeyUp={handleSearch}
-                />
-                <button
-                  type="submit"
-                  className="flex items-center justify-center rounded-r-lg border-2 border-l-0 border-black w-10 h-full bg-white"
-                >
-                  <FcSearch size={22} />
-                </button>
-              </form>
+              
             </div>
           </div>
           <div className="mt-[2rem] drop-shadow-md border-2 border-slate-300 rounded-lg bg-white overflow-hidden">
@@ -143,7 +135,7 @@ function DriverList() {
                               </tr>
                             )}
                       </tbody>
-                     
+                      <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color='primary' />
                     </table>
                     
                          

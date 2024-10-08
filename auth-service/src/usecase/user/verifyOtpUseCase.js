@@ -85,8 +85,12 @@ export class VerifyOtpUseCase {
         accessToken,
         refreshToken,
       };
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error(error);
+      throw error
+      
     }
+      
+    } 
   }
-}
+

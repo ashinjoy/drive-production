@@ -21,7 +21,6 @@ export class S3Config {
   }
   async uploadImage(imageDetails) {
     const imageName = crypto.randomBytes(32).toString("hex");
-    console.log("imgName", imageDetails);
     const params = {
       Bucket: this.bucketName,
       Key: imageName,
@@ -38,12 +37,12 @@ export class S3Config {
   }
   async getImageUrl(img) {
     try {
-      console.log("image get in url", img);
+     
       const getObjectParams = {
         Bucket: this.bucketName,
         Key: img.Key,
       };
-      console.log("getObjectParamas", getObjectParams);
+     
       const command = new GetObjectCommand(getObjectParams);
       const url = await getSignedUrl(this.s3, command, { expiresIn: 3600 });
       return {

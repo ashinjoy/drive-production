@@ -5,6 +5,7 @@ import Modal from "../../../Components/Driver/Modal/OtpModal";
 import UserNavbar from "../../../Components/Navbar/UserNavbar";
 import { registerDriver } from "../../../Features/Driver/driverActions";
 import { resestAll } from "../../../Features/Driver/driverSlice";
+import { Link } from "react-router-dom";
 
 function SignupPage() {
   const [formState, setFormState] = useState({
@@ -206,6 +207,7 @@ function SignupPage() {
                   Create an account
                 </button>
               </form>
+              <Link to='/driver/login' className="block mb-2 text-base font-medium text-gray-900">Login as Driver</Link>
             </div>
           </div>
         </div>

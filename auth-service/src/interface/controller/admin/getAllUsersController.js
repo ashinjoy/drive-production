@@ -7,28 +7,13 @@ export class GetAllUserController {
   async getAllUsers(req, res, next) {
     try {
       const { search, page } = req.query;
-      console.log(search, page);
-      if (!search && !page) {
-        console.log("hello guys");
-        const getUsers =await this.getAllUserUseCase.execute();
-        console.log(getUsers);
-        
-        res
-          .status(201)
-          .json({
-            userDetails: getUsers.allUsers,
-            totalPages: getUsers.totalPages,
-          });
-      } else if (search || page) {
-        const getUsers =await  this.getAllUserUseCase.execute(search, page);
-        console.log(getUsers);
-        res
-          .status(201)
-          .json({
-            userDetails: getUsers.allUsers,
-            totalPages: getUsers.totalPages,
-          });
-      }
+      const searchInp = search ? search : ''
+      const currentPageNumber = page ? page : 1
+   const getDrivers  =   await this.getAllUserUseCase.execute(searchInp,currentPageNumber)
+        res.status(201).json({
+          userDetails: getDrivers.allUsers,
+          totalPages: getDrivers.totalPages,
+        });
     } catch (error) {
       console.error(error); 
       next(error)

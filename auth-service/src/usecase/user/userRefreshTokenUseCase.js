@@ -6,8 +6,8 @@ export class userRefreshTokenUseCase {
     this.userRepository = new dependencies.repository.MongoUserRepository();
   }
   async execute(RefreshToken) {
-    try {
-      const decodeUserRefreshToken = await verifyRefreshToken(RefreshToken);
+  try {
+    const decodeUserRefreshToken = await verifyRefreshToken(RefreshToken);
       if (!decodeUserRefreshToken) {
         const error = new Error();
         error.status = 400;
@@ -44,9 +44,12 @@ export class userRefreshTokenUseCase {
     
       
       return newAccessToken;
-    } catch (error) {
-     
-      throw error;
-    }
+  } catch (error) {
+    console.error(error);
+    throw error
+    
   }
-}
+      
+    } 
+  }
+

@@ -5,6 +5,12 @@ export class ApproveDriverController{
     async approve(req,res,next){
         try {
             const {driverId} = req.params
+            if(!driverId){
+                const error = new Error()
+                error.message = "Bad Request"
+                error.status = 400
+                throw error
+            }
               const driverApproval =   await this.driverApproveUseCase.execute(driverId)
               const driverUpdatedData = {
                 id:driverApproval._id,
@@ -13,6 +19,7 @@ export class ApproveDriverController{
               res.status(200).json({driverUpdatedData,message:'Driver has been Approved'})
         } catch (error) { 
             console.error(error)
+            next(error)
         }
     }
 }

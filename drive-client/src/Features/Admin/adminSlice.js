@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import {adminLogin,getDriverDetails,blockUnblockDriver,driverDetails,getUserDetails, blockUnblockUser,searchDrivers,approveDriver,newlyRegisteredUsers, tripReports} from './adminActions'
+import {adminLogin,getDriverDetails,blockUnblockDriver,driverDetails,getUserDetails, blockUnblockUser,approveDriver,newlyRegisteredUsers, tripReports} from './adminActions'
 
 const adminData = JSON.parse(localStorage.getItem('adminData'))
 const adminAccessToken = localStorage.getItem('adminAccessToken')
@@ -13,6 +13,7 @@ const initialState = {
     loading:false,
     success:false,
     message:'',
+    totalDocs:1,
     error:'',
     report:null,
     tripReport:null
@@ -47,10 +48,10 @@ const initialState = {
           .addCase(getDriverDetails.fulfilled, (state, action) => {
               state.success = true
               state.driverData = action?.payload?.driverDetails
+              state.totalDocs =action.payload?.totalPages
               state.message = action?.payload?.message
           })
           .addCase(getDriverDetails.rejected, (state, action) => {
-            // state.error = action?.payload
           })
           .addCase(blockUnblockDriver.pending, (state, action) => {
             state.loading = true;
@@ -92,18 +93,20 @@ const initialState = {
           .addCase(driverDetails.fulfilled, (state,action) => {
               state.success = true
               state.driverData = action?.payload?.driverDetails
+              // state.totalDocs = action.payload?.totalPages
               state.message = action?.payload?.message
           })
           .addCase(driverDetails.rejected, (state, action) => {
             state.error = action?.payload
           })
-          .addCase(getUserDetails.pending, (state,action) => {
+          .addCase(getUserDetails.pending, (state) => {
             state.loading = true;
           })
           .addCase(getUserDetails.fulfilled, (state,action) => {
            
               state.success = true
               state.userData = action?.payload?.userDetails
+              state.totalDocs = action.payload?.totalPages
               state.message = action?.payload?.message
           })
           .addCase(approveDriver.pending,(state,action)=>{

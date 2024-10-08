@@ -1,30 +1,39 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { FcSearch } from "react-icons/fc";
+import React, { useEffect, useState } from "react";
+import { useDispatch ,useSelector } from "react-redux";
+import { Pagination } from "@mui/material";
 
 import AdminNavbar from "../../Components/Navbar/AdminNavbar";
 import AdminSidebar from "../../Components/Navbar/AdminSidebar";
 import {
- getUserDetails,
- blockUnblockUser
+ blockUnblockUser,
+ getUserDetails
 } from "../../Features/Admin/adminActions";
+import { getUserDetailService } from "../../Features/Admin/adminService";
 
 function UsersList() {
   const dispatch = useDispatch();
-  const { userData } = useSelector((state) => state.admin);
-  console.log('userData',userData);
+  const { userData ,totalDocs } = useSelector((state) => state.admin);
+  // console.log('userData',userData);
+ 
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPages] = useState(1)
+  const handlePageChange = (evt,value)=>{
+    setCurrentPage(value)
+  }
+
+  
+
   useEffect(() => {
-    dispatch(getUserDetails());
-  }, []);
-  const handleBlockUnBlock = (userId) => {
+    dispatch(getUserDetails(currentPage));
+  }, [currentPage]);
+
+  const handleBlockUnBlock = (userId) =>{ 
     dispatch(blockUnblockUser(userId));
   };
-  const handleSearch = () => {
-    console.log('hanlde');
-    // dispatch(debouncedSearch)
+  useEffect(()=>{
+    setTotalPages(Math.ceil(totalDocs/7))
+  },[totalDocs])
 
-  };
 
   return (
     <>
@@ -35,24 +44,7 @@ function UsersList() {
           <div className="flex justify-between">
             <h1 className="text-2xl font-bold mb-4">Users List</h1>
             <div className="w-1/3 h-10 flex">
-              <form className="flex w-full h-full">
-                <input
-                  type="search"
-                  name=""
-                  id=""
-                  // value={search}
-                  // onChange={(e)=>setSearch(e.target.value)}
-                  className="outline-none rounded-l-lg border-2 border-black w-full h-full px-3"
-                  placeholder="Search Here ...."
-                  onKeyUp={handleSearch}
-                />
-                <button
-                  type="submit"
-                  className="flex items-center justify-center rounded-r-lg border-2 border-l-0 border-black w-10 h-full bg-white"
-                >
-                  <FcSearch size={22} />
-                </button>
-              </form>
+              
             </div>
           </div>
           <div className="mt-[2rem] drop-shadow-md border-2 border-slate-300 rounded-lg bg-white overflow-hidden">
@@ -116,14 +108,6 @@ function UsersList() {
                                     {!user.isBlocked ? 'Block' : 'Unblock'}
                                   </button>
                                 </td>
-                                {/* <td className="whitespace-nowrap p-3">
-                                  <Link
-                                    to={`/admin/viewuser-Detail/${user._id}`}
-                                    className="font-medium text-blue-500 hover:text-blue-700 transition duration-150"
-                                  >
-                                    View Details
-                                  </Link>
-                                </td> */}
                               </tr>
                               );
                             })
@@ -135,6 +119,7 @@ function UsersList() {
                             </tr>)}
                       </tbody>
                     </table>
+<Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary"/>
                   </div>
                 </div>
               </div>

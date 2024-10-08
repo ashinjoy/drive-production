@@ -4,10 +4,11 @@ export class UserLogoutController{
     }
     async userLogout(req,res,next){
         try {
-          const logout =  await this.userLogoutUseCase.execute(req,res)
+            await this.userLogoutUseCase.execute(req,res)
           res.status(200).json({message:"logout success"})
         } catch (error) {
             console.error(error)
+            next(error)
         }
     }
 }

@@ -27,7 +27,7 @@ const createServer = () => {
   // app.use("/api/auth/user", userRouter);
   // app.use("/api/auth/driver", driverRouter);
   // app.use("/api/auth/admin", adminRouter);
-  app.get("/auth/monitor", (req, res) => {
+  app.get("/auth/monitor", () => {
     console.log("Health Monitoring Working Perfectly as Expected");
   });
   app.use("/auth/user", userRouter);

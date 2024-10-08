@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import  { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 function DriverProtected({children}) {
  const {driver,token} =  useSelector((state)=>state.driver)
- console.log('driver in protect',driver);
+
  const navigate = useNavigate()
  useEffect(()=>{
   if(!token && !driver?.isProfileCompleted && !driver?.isAccepted){
