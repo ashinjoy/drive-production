@@ -1,13 +1,14 @@
 export class AcceptRideController{
     constructor(dependencies){
-this.acceptRideUseCase  = new dependencies.useCase.AcceptRideUseCase(dependencies)
+        this.acceptRideUseCase  = new dependencies.useCase.AcceptRideUseCase(dependencies)
     }
     async acceptRide(req,res,next){
         try {
             const {tripId,driverId,status} = req.body
+
             if(!tripId || !driverId || !status){
                 const error = new Error()
-                error.message = "Bad Request:No necessary Data to process Request"
+                error.message = "Bad Request"
                 error.status = 400
                 throw error
             }

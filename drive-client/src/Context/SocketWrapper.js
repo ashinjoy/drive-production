@@ -7,7 +7,9 @@ function SocketWrapper({ children }) {
   const [chatSocket,setChatSocket] = useState(null)
 
   useEffect(() => {
-    const socketInstance = io("http://localhost:3003");
+    const socketInstance = io(`http://localhost:3003`,{
+      path:'/socket.io/trip',
+    });
     setSocket(socketInstance);
     socketInstance.on("connect", () => {
       console.log(" client connected successFully to trip-srv");
@@ -26,7 +28,9 @@ function SocketWrapper({ children }) {
   }, []);
 
   useEffect(()=>{
-    const chatSocketInstance = io("http://localhost:3004")
+    const chatSocketInstance = io(`http://localhost:3004`,{
+      path:'/socket.io/chat'
+    })
     setChatSocket(chatSocketInstance)
     chatSocketInstance.on("connect",()=>{
       console.log(" client connected successFully to chat-srv");

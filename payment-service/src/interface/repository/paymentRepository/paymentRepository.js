@@ -12,9 +12,16 @@ export class PaymentRepository {
       });
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
-  async findPaymentByTrip_Update(id, data) {
-    return await paymentModel.findOneAndUpdate({ tripId: id }, { $set: data },{new:true})
+  async findTripAndUpdate(id, data) {
+    try {
+    return await paymentModel.findOneAndUpdate({ tripId: id }, { $set: data },{new:true}).lean()
+    } catch (error) {
+      console.error(error);
+      throw error
+      
+    }
   }
 }

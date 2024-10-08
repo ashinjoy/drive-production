@@ -54,7 +54,7 @@ function AdminSidebar() {
 
         <div className="flex flex-row min-w-[60%] h-[3rem] justify-center items-center hover:bg-slate-100 rounded-md">
           <NavLink
-            to="/admin/Users-list"
+            to="/admin/users-list"
             className={({ isActive }) =>
               `flex flex-row min-w-[100%] h-[3rem] justify-center items-center rounded-md gap-2 
         ${
@@ -72,29 +72,7 @@ function AdminSidebar() {
         </div>
 
 
-        <div className="flex flex-row min-w-[60%] h-[3rem] justify-center items-center hover:bg-slate-100 rounded-md">
-          <NavLink
-            to="/admin/trip-report"
-            className={({ isActive }) =>
-              `flex flex-row min-w-[100%] h-[3rem] justify-center items-center rounded-md gap-2 
-        ${
-          isActive
-            ? "bg-yellow-500 text-white "
-            : "hover:bg-slate-100 text-black"
-        }`
-            }
-          >
-            <FcSalesPerformance
-              size={18}
-              className={({ isActive }) =>
-                isActive ? "text-white" : "text-black"
-              }
-            />
-            <span className="text-lg font-medium text-gray-700">
-              Trip Report
-            </span>
-          </NavLink>
-        </div>
+      
       </div>
     </div>
   );

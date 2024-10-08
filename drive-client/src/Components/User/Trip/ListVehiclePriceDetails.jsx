@@ -16,15 +16,14 @@ function ListVehiclePriceDetails({
   const [eta, setEta] = useState(null);
   const bikeContainerRef = useRef(null);
   const autoContainerRef = useRef(null);
-  const [paymentMethod,setPaymentMethod] = useState("Online-Payment");
+  const [paymentMethod, setPaymentMethod] = useState("Online-Payment");
   const navigate = useNavigate();
-
   const { additionalSearchMetaData } = useSelector((state) => state.trip);
   const dispatch = useDispatch();
 
   const handleSelectVehicle = (vehicle) => {
     setSelectCategory(vehicle);
-    if (selectCategory == "Bike") {
+    if (selectCategory === "Bike") {
       bikeContainerRef.current.focus();
     } else {
       autoContainerRef.current.focus();
@@ -41,23 +40,23 @@ function ListVehiclePriceDetails({
       dropLocation,
       distance: additionalSearchMetaData?.distance,
       duration: additionalSearchMetaData?.duration,
-      paymentMethod 
+      paymentMethod,
     };
-    if (selectCategory == "Bike") {
+    if (selectCategory === "Bike") {
       data = { ...data, fare: bikeFare };
     } else {
       data = { ...data, fare: autoFare };
     }
     dispatch(requestRideAction(data));
     navigate("/trip");
-  }
+  };
 
   useEffect(() => {
     const vehicleDetails = calculateFare(additionalSearchMetaData);
     setAutoFare(vehicleDetails?.AUTO_FARE);
     setBikeFare(vehicleDetails?.BIKE_FARE);
     setEta(vehicleDetails?.eta);
-  }, [pickUpCoords, dropCoords]);
+  }, [additionalSearchMetaData]);
 
   return (
     <>
@@ -116,12 +115,15 @@ function ListVehiclePriceDetails({
           </div>
         </div>
         <div className="mt-6 flex items-center justify-between">
-          <select className="border p-2 rounded-md" onChange={(e)=>setPaymentMethod(e.target.value)
-          } >
+          <select
+            className="border p-2 rounded-md"
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
             <option value="Cash">Cash</option>
-            <option value="Online-Payment" selected>Pay Online</option>
+            <option value="Online-Payment" selected>
+              Pay Online
+            </option>
             <option value="Wallet">Wallet</option>
-
           </select>
           <button
             className="bg-black text-white py-2 px-6 rounded-lg hover:bg-gray-800 transition-colors duration-200"
@@ -146,9 +148,13 @@ function calculateFare(additionalSearchMetaData) {
 
   const TotalDistance_Kilometres = additionalSearchMetaData?.distance / 1000;
 
-  const BIKE_FARE = Math.ceil(TotalDistance_Kilometres * BIKE_CHARGE_PER_KM + BIKE_MIN_RATE);
+  const BIKE_FARE = Math.ceil(
+    TotalDistance_Kilometres * BIKE_CHARGE_PER_KM + BIKE_MIN_RATE
+  );
 
-  const AUTO_FARE = Math.ceil(TotalDistance_Kilometres * AUTO_MIN_RATE + AUTO_CHARGE_PER_KM);
+  const AUTO_FARE = Math.ceil(
+    TotalDistance_Kilometres * AUTO_MIN_RATE + AUTO_CHARGE_PER_KM
+  );
 
   const eta = Math.floor(additionalSearchMetaData?.duration / 60);
 

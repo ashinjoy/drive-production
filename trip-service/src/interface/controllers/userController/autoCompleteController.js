@@ -11,14 +11,16 @@ async autoComplete(req,res,next){
         console.log("iscooeds",isCoordinates);
         if(coordsPattern.test(search)){
          const searchResult =   await this.reverseGeocode.execute(isCoordinates)
-         res.status(201).json({searchResult})
-        }else{
-            const searchResults =   await this.autoCompleteUseCase.execute(search)
-            res.status(201).json({searchResults})
+         res.status(200).json({searchResult})
+         return
         }
+          const searchResults =   await this.autoCompleteUseCase.execute(search)
+          res.status(200).json({searchResults})
+        
 
     } catch (error) {
-        console.error(error);  
+        console.error(error);
+        next(error)
     }
 }
 }

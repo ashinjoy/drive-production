@@ -1,4 +1,5 @@
 import express from 'express'
+
 import { GetDriverOnlineController } from '../../controllers/driverController/getOnlineController.js'
 import { AcceptRideController } from '../../controllers/driverController/acceptRideController.js'
 import { RejectRideController } from '../../controllers/driverController/rejectRideController.js'

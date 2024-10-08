@@ -32,12 +32,17 @@ function UserNavbar() {
       return;
     }
     socket?.emit("user-connected", userId);
-    socket?.on("rideAccepted", (tripData) => {
+    socket?.on('request-ride',(data)=>{
+      dispatch(setTripData(data))
+    })
+    socket?.on("ride-accept", (tripData) => {
+      console.log('rideaccept',tripData);
+      
       dispatch(setTripData(tripData));
     });
     return () => {
       socket?.off("user-connected");
-      socket?.off("rideAccepted");
+      socket?.off("ride-accept");
     };
   }, [socket, user]);
 
@@ -47,7 +52,7 @@ function UserNavbar() {
     }
 
     const handleRideStartSocket = (data) => {
-      dispatch(setTripStatus());
+      dispatch(setTripStatus(data));
     };
 
     const handleRideEndSocket = (data) => {
@@ -55,7 +60,7 @@ function UserNavbar() {
       setRideComplete(true);
       setRideCompleteData(data);
     };
-    socket?.on("ride-start", handleRideStartSocket);
+    socket?.on('ride-start', handleRideStartSocket);
     socket?.on("ride-complete", handleRideEndSocket);
 
     return () => {

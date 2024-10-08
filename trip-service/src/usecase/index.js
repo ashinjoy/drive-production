@@ -2,6 +2,7 @@ import { UserCreatedConsumerUseCase  } from "./consumeMessageUseCase.js/userCrea
 import { UserUpdateUseCase } from "./consumeMessageUseCase.js/userUpdateUseCase.js";
 import {DriverCreatedConsumerUseCase} from './consumeMessageUseCase.js/driverCreatedUseCase.js'
 import { DriverUpdateConsumerUseCase } from "./consumeMessageUseCase.js/driverUpdatedUseCase.js";
+import { TripUpdateConsumerUseCase } from "./consumeMessageUseCase.js/tripUpdateUseCase.js";
 import { UserCurrentLocationUseCase } from "./user/getCurrentLocationUseCase.js";
 import {LocationAutoCompleteUseCase} from './user/locationAutoCompleteUseCase.js'
 import { GetDriverOnlineUseCase } from "./driver/getOnlineUseCase.js";
@@ -58,5 +59,6 @@ export {
     GetLatestTripsUseCase,
     GetAllLatestTripsUseCase,
     MostActiveDriverUseCase,
-    TotalTripsCountUseCase
+    TotalTripsCountUseCase,
+    TripUpdateConsumerUseCase
 }

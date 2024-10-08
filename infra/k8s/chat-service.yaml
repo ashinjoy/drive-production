@@ -34,19 +34,7 @@ spec:
              valueFrom: 
                secretKeyRef:
                  name: chat-secret
-                 key: JWT_REFRESHTOKEN_SECRET  
-           
-           - name: PASSWORD
-             valueFrom: 
-               secretKeyRef:
-                 name: chat-secret
-                 key: PASSWORD
-           - name: SESSION_SECRET
-             valueFrom: 
-               secretKeyRef:
-                 name: chat-secret
-                 key: SESSION_SECRET
-                                                      
+                 key: JWT_REFRESHTOKEN_SECRET                                             
           resources:
             limits:
               memory: "128Mi"
@@ -60,6 +48,6 @@ spec:
   selector:
     app: chat
   ports:
-  - name: auth
+  - name: chat
     port: 3004
     targetPort: 3004    

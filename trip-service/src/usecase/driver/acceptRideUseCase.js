@@ -24,10 +24,7 @@ export class AcceptRideUseCase {
         tripStatus: status,
       };
       
-      const acceptRequest = await this.tripRepository.findTripByIdAndUpdate(
-        tripId,
-        dataToUpdate
-      );
+      const acceptRequest = await this.tripRepository.findTripByIdAndUpdate(tripId,dataToUpdate);
 
       const dataToPublish = {
         _id:acceptRequest?._id,
@@ -54,15 +51,12 @@ export class AcceptRideUseCase {
       })
 
       const findTrip = await this.tripRepository.findTrip(tripId);
-      const findUserEmail = findTrip.userId?.email;
+      const findUserEmail = findTrip.userId?.email
       const otp = generateOTP();
       console.log("otp for Driver", "=============>", otp);
       await sendMail(otp, findUserEmail);
       const awsS3 = new S3Config()
-
       const profileUrl = await awsS3.getImageUrl({type:"ProfileImg",Key:acceptRequest?.driverId?.profileImg})
-     
-
       const dataToUser = {
         driverDetails:{
             name:acceptRequest?.driverId?.name,
@@ -91,7 +85,9 @@ export class AcceptRideUseCase {
         _id:acceptRequest?._id
 
       }
-      userNotify("rideAccepted", dataToUser, acceptRequest.userId);
+      console.log('datoToUser',dataToUser);
+      
+      userNotify("ride-accept", dataToUser, acceptRequest.userId);
       return { acceptRequest, otp };
     } catch (error) {
       console.error(error);

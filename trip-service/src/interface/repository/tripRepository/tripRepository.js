@@ -1,29 +1,43 @@
 import mongoose from "mongoose";
 import { tripModel } from "../../database/schema/tripSchema/tripSchema.js";
-import { reservationsUrl } from "twilio/lib/jwt/taskrouter/util.js";
 export class TripRepository {
   constructor() {}
   async createTrip(data) {
+    try {
     return await tripModel.create(data);
+    } catch (error) {
+      console.error(error)
+      throw error
+    }
   }
-  async findTrip(id) {
-    return await tripModel.findById({ _id: id }).populate("userId");
+  async findTrip(tripId) {
+    try {
+      return await tripModel.findById({ _id: tripId }).populate("userId");
+    } catch (error) {
+      console.error(error);
+      throw error
+    }
   }
   async findTripByIdAndUpdate(id, data) {
-    console.log("inside repo", id, data);
-
-    const upadateddata = await tripModel
-      .findByIdAndUpdate({ _id: id }, { $set: data }, { new: true })
-      .populate("driverId");
-    console.log("dataaaaaaaaaaaaaa", upadateddata);
-
-    return upadateddata;
+    try {
+      return await tripModel.findByIdAndUpdate({ _id: id }, { $set: data }, { new: true }).populate("driverId")
+    } catch (error) {
+      console.error(error);
+      throw error
+    } 
   }
   async findTripByIdAndReject(tripId, status, driverId) {
-    return await tripModel.findByIdAndUpdate(
-      { _id: tripId },
-      { $set: { requestStatus: status }, $push: { rejectedDrivers: driverId } }
-    );
+    try {
+      return await tripModel.findByIdAndUpdate(
+        { _id: tripId },
+        { $set: { requestStatus: status }, $push: { rejectedDrivers: driverId } }
+      );
+    } catch (error) {
+      console.error(error);
+      throw error
+      
+    }
+    
   }
 
   async findTripAndUpdate(id, data) {
@@ -77,19 +91,21 @@ export class TripRepository {
     }
   }
 
-  async findTripCountPerUser(userId) {
+  async getUsersTotalTripCount(userId) {
     try {
       return await tripModel.countDocuments({ userId: userId });
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
 
-  async findAllTrips(userId, page, limit = 6) {
+  async getUsersTrip(userId, page, limit = 6) {
     try {
-      return await tripModel.find({ userId: userId }).skip(page).limit(limit).sort({createdAt:-1});
+      return await tripModel.find({ userId: userId }).skip((page-1)*limit).limit(limit).sort({createdAt:-1});
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
 

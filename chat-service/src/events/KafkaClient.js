@@ -3,11 +3,12 @@ import { consumeManager } from "./consumeMessages.js";
 export class KafkaClient {
   constructor() {
     this.kafka = new Kafka({
-      clientId: "trip-service",
+      clientId: "chat-service",
       brokers: [
-        "kafka-0.kafka-headless.kafka.svc.cluster.local:9092",
-        "kafka-1.kafka-headless.kafka.svc.cluster.local:9092",
-        "kafka-2.kafka-headless.kafka.svc.cluster.local:9092"
+        // "kafka-0.kafka-service.kafka.svc.cluster.local:9092",
+        // "kafka-1.kafka-service.kafka.svc.cluster.local:9092",
+        // "kafka-2.kafka-service.kafka.svc.cluster.local:9092"
+        "127.0.0.1:9092"
       ],
     });
     this.producer = this.kafka.producer();
@@ -42,7 +43,7 @@ export class KafkaClient {
         throw new Error('Cannot Connect To Topic')
       }
         await this.consumer.connect()
-        console.log('connected to kafka cluster succe======================>')
+        // console.log('connected to kafka cluster succe======================>')
         await this.consumer.subscribe({ topics: topics, fromBeginning: true })
         await this.consumer.run({
             eachMessage: async ({ topic, partition, message }) => {

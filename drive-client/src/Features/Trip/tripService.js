@@ -2,14 +2,9 @@ import axiosInstance from "../../Utils/Axios/baseUrl";
 import { driverPrivate } from "../../Utils/Axios/driverInterceptor";
 import { UserPrivate } from "../../Utils/Axios/userInterceptor";
 
-export const searchNearByDriverService = async (
-  userId,
-  pickupLocation,
-  dropoffLocation
-) => {
-  return UserPrivate.get(
-    `trip/users/nearby-drivers?userId=${userId}&pickupLongitude=${pickupLocation[0]}&pickupLatitude=${pickupLocation[1]}&dropLongitude=${dropoffLocation[0]}&dropLatitude=${dropoffLocation[1]}`
-  );
+export const searchNearByDriverService = async (searchDetails) => {
+  const {userId,pickupLocation,dropoffLocation} = searchDetails
+  return UserPrivate.get(`trip/users/nearby-drivers?userId=${userId}&pickupLongitude=${pickupLocation[0]}&pickupLatitude=${pickupLocation[1]}&dropLongitude=${dropoffLocation[0]}&dropLatitude=${dropoffLocation[1]}`);
 };
 
 export const  requestRideService = async (data) => {
@@ -49,19 +44,21 @@ export const getMessageService = async(tripId)=>{
   }
 }
 
-export const getAllTripsService =async(userId)=>{
+export const getAllTripsService =async(data)=>{
   try {
-    const response =await UserPrivate.get(`trip/users/trip-details/${userId}`)
+    console.log('pa',data);
+    
+    const response = await UserPrivate.get(`trip/users/trip-details?userId=${data?.userId}&page=${data?.page}`)
     return response.data
   } catch (error) {
     console.error(error);
-    
+    throw error
   }
 }
 
 export const getTripDetailService =async(tripId)=>{
   try {
-    const response = await UserPrivate.get(`payment/user/trip-deatils/${tripId}`)
+    const response = await UserPrivate.get(`payment/user/trip-details/${tripId}`)
     return response.data
   } catch (error) {
     
@@ -72,3 +69,14 @@ export const cancelRideService =async(rideCancelInfo)=>{
   return await UserPrivate.post('trip/users/cancel-ride',rideCancelInfo)
 }
 
+export const paymentService = async(data)=>{
+  try {
+    const response = await UserPrivate.post('payment/user/payment',data)
+    console.log('rep',response);
+    
+    return response.data
+  } catch (error) {
+    console.error(error);
+    
+  }
+}

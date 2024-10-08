@@ -1,13 +1,12 @@
 import React, { useState ,useEffect} from 'react'
 import { useParams } from 'react-router-dom'
 import { getTripDetailService } from '../../../Features/Trip/tripService';
+import UserNavbar from '../../../Components/Navbar/UserNavbar';
 
 function TripDetailPage() {
     const {tripId} = useParams()
     const [tripDetail,setTripDetail] = useState(null)
     const [date,setDate] =useState(null)
-    
-    
      useEffect(() => {
         const getTripDetail = async()=>{
          const response =    await getTripDetailService(tripId)
@@ -18,7 +17,9 @@ function TripDetailPage() {
        
     }, []);
   return (
-    <div className="min-h-screen bg-gradient-to-r from-white to-[#ffffe8] flex items-center justify-center p-4">
+    <>
+    <UserNavbar/>
+    <div className="min-h-screen mt-[2rem] flex items-center justify-center p-4">
   <div className="max-w-lg w-full bg-white shadow-lg rounded-lg overflow-hidden">
     <div className="bg-blue-500 text-white p-6">
       <h1 className="text-2xl font-semibold">Trip Details</h1>
@@ -101,17 +102,11 @@ function TripDetailPage() {
       </div>
 
       <div className="flex justify-between items-center border-t border-gray-200 pt-4">
-        {/* <button className="bg-blue-500 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-600 transition duration-200">
-          Contact Driver
-        </button> */}
-        {/* <button className="text-blue-500 px-6 py-3 rounded-lg shadow border border-blue-500 hover:bg-blue-100 transition duration-200">
-          View Receipt
-        </button> */}
       </div>
     </div>
   </div>
 </div>
-
+</>
   )
 }
 

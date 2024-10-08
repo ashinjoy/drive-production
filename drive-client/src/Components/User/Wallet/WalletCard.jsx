@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { IoAddCircle } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import {getWalletBalance, addMoneyToWalletService } from '../../../Features/User/userService';
 
@@ -9,7 +8,7 @@ function WalletCard({component,setWalletHistory}) {
   const [amount,setAmount] = useState('')
   const {user} = useSelector(state=>state.user)
   useEffect(()=>{
-    if(component == 'userBalance'){
+    if(component === 'userBalance'){
       const getBalance = async()=>{
           const response =  await getWalletBalance(user?.id)
           console.log(response?.balance);
@@ -33,9 +32,6 @@ function WalletCard({component,setWalletHistory}) {
   setAmount('')
   }
 
-  // useEffect(()=>{
-
-  // },[balance])
 
   return (
     <div className="w-[25dvw] h-[30dvh] border-2 border-gray-300 bg-white shadow-lg  rounded-lg p-6">

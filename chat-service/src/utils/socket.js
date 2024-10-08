@@ -6,8 +6,9 @@ let io;
 export const socketConnection = async (httpServer) => {
   try {
     io = new Server(httpServer, {
+      path:'/socket.io/chat',
       cors: {
-        origin: ["http://localhost:3001", "http://localhost:3000"],
+        origin:"http://localhost:3000",
       },
     });
     io.on("connection", (socket) => {

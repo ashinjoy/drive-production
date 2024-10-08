@@ -4,22 +4,22 @@ export class StartRideUseCase{
 constructor(dependencies){
     this.tripRepository = new dependencies.repository.MongoTripRepository()
 }
-async execute(userOtp,bodyOtp,tripId) {
+async execute(inpOtp,userOtp,tripId) {
     try {
-        if(userOtp === bodyOtp){
-            const dataToUpdate ={
-                tripStatus:'started'
-            }
-            
+        if(inpOtp === userOtp){
+            const dataToUpdate ={tripStatus:'started'}
           const updateTripStatus =  await this.tripRepository.findTripByIdAndUpdate(tripId,dataToUpdate)
-          userNotify('ride-started','started',updateTripStatus?.userId)
-          console.log('updateTrip',updateTripStatus);
+          userNotify('ride-start','started',updateTripStatus?.userId)
           return updateTripStatus
         }
-        console.log("not in condition=============");
+        const error = new Error()
+        error.message = "OTP is not Valid"
+        error.status = 400
+        throw error
         
     } catch (error) {
         console.error(error)
+        throw error
     }
     
 }

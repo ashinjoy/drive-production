@@ -5,7 +5,7 @@ import { AUTH_SERVICE } from "../../../config/constants/proxyTarget.js";
 const authRouter = express.Router();
 
 authRouter.use(createProxyMiddleware({
-    target: 'http://localhost:3002/auth',
+    target: 'http://localhost:3002/auth/',
     changeOrigin: true,
   })
 );

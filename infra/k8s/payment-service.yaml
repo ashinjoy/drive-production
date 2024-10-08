@@ -35,17 +35,17 @@ spec:
                secretKeyRef:
                  name: payment-secret
                  key: JWT_REFRESHTOKEN_SECRET  
-           
+           - name: MAIL
+             valueFrom: 
+               secretKeyRef:
+                 name: payment-secret
+                 key: MAIL
            - name: PASSWORD
              valueFrom: 
                secretKeyRef:
                  name: payment-secret
                  key: PASSWORD
-           - name: MAIL
-             valueFrom: 
-               secretKeyRef:
-                 name: payment-secret
-                 key: MAIL      
+                 
            - name: SESSION_SECRET
              valueFrom: 
                secretKeyRef:
@@ -71,11 +71,6 @@ spec:
                secretKeyRef:
                  name: payment-secret
                  key: S3_SECRETKEY 
-           - name: MAPBOX_ACCESS_TOKEN
-             valueFrom: 
-               secretKeyRef:
-                 name: payment-secret
-                 key: MAPBOX_ACCESS_TOKEN
            - name: STRIPE_SECRET_KEY
              valueFrom: 
                secretKeyRef:

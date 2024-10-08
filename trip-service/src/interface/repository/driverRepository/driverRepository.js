@@ -49,45 +49,36 @@ export class DriverRepository {
     return await driverModel.countDocuments();
   }
 
-  async findNearstDriversAvailable(pickupCoordinates) {
-    return await driverModel.aggregate([
-      {
-
-        $geoNear: {
-          near: {
-            type: "Point",
-            coordinates: [pickupCoordinates[0], pickupCoordinates[1]],
-          },
-          distanceField: "dist.calculated",
-          maxDistance: 8000,
-          query: { 
-            isAccepted: true,
-            isBlocked: false,
-             isVerified: true,
-             isProfileComplete: true,
-             isAccepted: true,
-             isActive: true,
-             currentStatus: "active"  
+  async findNearstDriversAvailable(pickupCoordinates) { 
+    try {
+      return await driverModel.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: [pickupCoordinates[0], pickupCoordinates[1]],
             },
-            spherical: true,
-          }
-          
-        },
-      // },
-      // {
-      //   $match: {
-        
-      //       { isBlocked: false },
-      //       { isVerified: true },
-      //       { isProfileComplete: true },
-      //       { isAccepted: true },
-      //       { isActive: true },
-      //       { currentStatus: "active" },
-          
-      //   },
-      // },
-     
-    ]);
+            distanceField: "dist.calculated",
+            maxDistance: 8000,
+            query: { 
+              isAccepted: true,
+              isBlocked: false,
+               isVerified: true,
+               isProfileComplete: true,
+  
+               isActive: true,
+               currentStatus: "active"  
+              },
+              spherical: true,
+            }
+            
+          }]);
+    } catch (error) {
+        console.error(error);
+        throw error
+
+    }
+    
 
   }
   async rideRequestToSelectedVehicle(pickupCoordinates,vehicleType) {

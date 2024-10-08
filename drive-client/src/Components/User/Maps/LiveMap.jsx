@@ -1,12 +1,18 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import Map, { Marker, Source, Layer } from "react-map-gl";
-import { searchLocationContext } from "../../../Context/UserSearchContext";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import Map, { Marker, Source, Layer } from "react-map-gl";
 import { useSocket } from "../../../Hooks/socket";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+
+
+
+
+// import mapboxgl from "mapbox-gl";
+// import { searchLocationContext } from "../../../Context/UserSearchContext";
 import axios from "axios";
-import NearByPickup from "../Notification/NearByPickup";
+import RippleEffect from "./RippleEffect";
+// import NearByPickup from "../Notification/NearByPickup";
 function LiveMapUpdates() {
   const mapContainerRef = useRef(null);
   const { token, user } = useSelector((state) => state.user);
@@ -15,31 +21,23 @@ function LiveMapUpdates() {
   const [pickup, setPickUp] = useState([]);
   const [dropOff, setDropoff] = useState([]);
   const [driverCoords, setDriverCoords] = useState([]);
-  const [viewState, setViewState] = useState({});
-  const [liveUpdates,setLiveUpdate] = useState({})
-
-  
-
+  const [viewState, setViewState] = useState({ 
+    latitude:9.934814501530493,
+    longitude:76.3260732465575,
+    zoom:13
+  });
+  // const [liveUpdates,setLiveUpdate] = useState({})
   const [route,setRoute] = useState(null)
-
   const {socket,chatSocket} = useSocket();
-  const [mapStyle, setMapStyle] = useState("mapbox://styles/mapbox/streets-v12");
-
   useEffect(()=>{
     if(chatSocket && token){
-      console.log("chatspckket");
-      
       chatSocket?.emit("user-chat-connect",{userId:user?.id})
     }
-    // return ()=>{
-    //   chatSocket?.off()
-    // }
 
   },[chatSocket])
 
   useEffect(() => {
-    console.log('tripDetual',tripDetail);
-    if(tripDetail && (tripStatus == "started" || tripStatus == "accepted")){
+    if(tripDetail && (tripStatus === "started" || tripStatus === "accepted")){ 
     setPickUp(tripDetail?.startLocation?.coordinates);
     setDropoff(tripDetail?.endLocation?.coordinates);
     // setDriverCoords(tripDetail?.driverId?.currentLocation?.coordinates)
@@ -77,14 +75,12 @@ function LiveMapUpdates() {
   }, [tripDetail]);
 
   useEffect(() => {
-      if(socket && tripDetail && (tripStatus == "accepted" || tripStatus == "started")){
+      if(socket && tripDetail && (tripStatus === "accepted" || tripStatus === "started")){
         socket?.on("live-location",(data)=>{
         console.log('positional Coordinates-Live Trackinggggggggggg',data);          
-        // setDriverCoords([data?.pos?.coords?.longitude,data?.pos?.coords?.latitude]);
         setDriverCoords(data?.liveLocation)
           })
-        // socket.on("dummy-event",()=>console.log("Worked")
-        // )
+
       }
 
   }, [socket,tripDetail,driverCoords,tripStatus]);
@@ -106,17 +102,18 @@ function LiveMapUpdates() {
     },
   };
 
-
   return (
     <>
     <Map
     ref={mapContainerRef}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
-      style={{ width: "65%", height: "35rem",position:"fixed", top:"7rem",right:"2rem"}}
-      attributionControl={false} 
-      mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+    {...viewState}
+    onMove={(evt)=>setViewState(evt.viewState)}
+    mapStyle="mapbox://styles/mapbox/streets-v9"
+    style={{ width: "65%", height: "35rem",position:"fixed", top:"7rem",right:"2rem"}}
+    attributionControl={false} 
+    mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
     >
-      {pickup.length > 0 && (
+      {pickup && pickup.length > 0 && (
         <Marker
           longitude={pickup[0]}
           latitude={pickup[1]}
@@ -125,7 +122,7 @@ function LiveMapUpdates() {
           <img src="/assets/pickup_marker.png" alt="Dropoff Marker" />
         </Marker>
       )}
-      {dropOff.length > 0 && (
+      {dropOff && dropOff.length > 0 && (
         <Marker
           longitude={dropOff[0]}
           latitude={dropOff[1]}
@@ -135,7 +132,7 @@ function LiveMapUpdates() {
         </Marker>
       )}
 
-      {driverCoords.length > 0 && (
+      {driverCoords && driverCoords.length > 0 && (
         <Marker
           longitude={driverCoords[0]}
           latitude={driverCoords[1]}
@@ -152,6 +149,9 @@ function LiveMapUpdates() {
               <Layer {...routeLine} />
             </Source>
           )}
+          {
+            tripStatus === "requested" && <RippleEffect/>
+          }
     </Map>
    </>
   );

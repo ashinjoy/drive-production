@@ -32,29 +32,14 @@ export const userCurrentLocationService = async (coordinates) => {
   return await UserPrivate.post("trip/users/location", coordinates);
 };
 
-export const stripePaymentService = async (data) => {
-  try {
-    const response = await UserPrivate.post("payment/stripe-session", data);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error
-  }
-};
+export const geoCodeService = async(pickup,pickupLong)=>{
+  return await axios.get(`trip/users/reverse-geocode?pickupLat=${pickup}&pickupLong=${pickupLong}`)
+}
 
-export const walletPaymentService = async (data) => {
-  try {
-    const response = await UserPrivate.post("payment/wallet", data);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error
-  }
-};
 
 export const addMoneyToWalletService = async (data) => {
   try {
-    const response = await UserPrivate.post("payment/wallet/addmoney", data);
+    const response = await UserPrivate.post("payment/user/wallet-addmoney", data);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -64,7 +49,7 @@ export const addMoneyToWalletService = async (data) => {
 
 export const getWalletBalance = async (userId) => {
   try {
-    const response = await UserPrivate.get(`payment/user/get-walletbalance/${userId}`);
+    const response = await UserPrivate.get(`payment/user/walletbalance/${userId}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -73,21 +58,11 @@ export const getWalletBalance = async (userId) => {
   }
 };
 
-export const paymentService = async(data)=>{
-  try {
-    const response = await UserPrivate.post('payment/user/payment',data)
-    return response.data
-  } catch (error) {
-    console.error(error);
-    
-  }
-}
 
-export const getWalletHistoryService = async (userId) => {
+
+export const getWalletHistoryService = async (data) => {
   try {
-    const response = await UserPrivate.get(
-      `payment/user/wallethistory/${userId}`
-    );
+    const response = await UserPrivate.get(`payment/user/wallethistory?userId=${data?.userId}&page=${data?.page}`);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -105,6 +80,3 @@ export const SosAlertService = async(userId)=>{
   return await UserPrivate.post('trip/users/emergency-alert',{userId})
 }
 
-export const geoCodeService = async(pickup,pickupLong)=>{
-  return await axios.get(`trip/users/reverse-geocode?pickupLat=${pickup}&pickupLong=${pickupLong}`)
-}

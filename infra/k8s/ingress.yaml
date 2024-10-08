@@ -1,0 +1,145 @@
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: ingress-nginx
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ingress-svc
+#   annotations: 
+#     nginx.ingress.kubernetes.io/use-regex: 'true'
+#     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+#     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+#     nginx.ingress.kubernetes.io/proxy-buffering: "off"
+#     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+#     nginx.ingress.kubernetes.io/proxy-set-headers: |
+#       Upgrade $http_upgrade;
+#       Connection "upgrade";
+#     nginx.ingress.kubernetes.io/enable-cors: "true"
+#     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+#     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, PUT, POST, DELETE, PATCH, OPTIONS"
+#     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
+#     nginx.ingress.kubernetes.io/cors-expose-headers: "Content-Length,Content-Range"
+#     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"  
+# spec:
+#   rules:
+#   - host: drive.online
+#     http:
+#       paths:
+#       - pathType: ImplementationSpecific
+#         path: "/api/auth/?(.*)"
+#         backend:
+#           service:
+#             name: auth-service
+#             port:
+#              number: 3002
+#       - pathType: ImplementationSpecific
+#         path: "/api/trip/?(.*)"
+#         backend:
+#           service:
+#             name: trip-service
+#             port:
+#              number: 3003
+#       - pathType: ImplementationSpecific
+#         path: "/api/chat/?(.*)"  # Routing for the chat service
+#         backend:
+#           service:
+#             name: chat-service
+#             port:
+#              number: 3004
+#       - pathType: ImplementationSpecific
+#         path: "/api/payment/?(.*)"
+#         backend:
+#           service:
+#             name: payment-service
+#             port:
+#              number: 3005
+#       - pathType: Prefix
+#         path: "/"
+#         backend:
+#           service:
+#             name: drive-client-service  # The name of your React app service
+#             port:
+#               number: 3000             
+#   ingressClassName: nginx
+
+# kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.2/deploy/static/provider/cloud/deploy.yaml
+
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: ingress-nginx
+    annotations:
+      nginx.ingress.kubernetes.io/use-regex: 'true'
+      nginx.ingress.kubernetes.io/enable-websocket: "true"
+      nginx.ingress.kubernetes.io/proxy-connection-header: "true"
+      nginx.org/proxy-read-timeout: "3600"
+      nginx.org/proxy-send-timeout : "3600"
+      nginx.ingress.kubernetes.io/upgrade: "websocket"
+      nginx.ingress.kubernetes.io/websocket-services: "trip-service,chat-service"
+      nginx.ingress.kubernetes.io/enable-cors: "true"
+      nginx.ingress.kubernetes.io/cors-allow-origin: "http://drive.online"
+      nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS"
+      nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization"
+      nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+
+      # nginx.ingress.kubernetes.io/rewrite-target: /$1
+      # nginx.ingress.kubernetes.io/enable-cors: "true"
+      # nginx.ingress.kubernetes.io/cors-allow-origin: "http://drive.online"
+  spec:
+    ingressClassName: nginx
+    rules:
+    - host: drive.online
+      http:
+        paths:
+        - path: /api/auth(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: auth-service
+              port:
+                number: 3002
+        - path: /api/trip(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: trip-service
+              port:
+                number: 3003
+        - path: /api/chat(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: chat-service
+              port:
+                number: 3004        
+        - path: /api/payment(/|$)(.*)
+          pathType: ImplementationSpecific
+          backend:
+            service:
+              name: payment-service
+              port:
+                number: 3005         
+        - path: /socket.io/trip
+          pathType: ImplementationSpecific
+          backend:
+            service: 
+              name: trip-service
+              port:
+                number: 3003  
+        - path: /socket.io/chat
+          pathType: ImplementationSpecific
+          backend:
+            service: 
+              name: chat-service
+              port:
+                number: 3004
+        - path: /
+          pathType: ImplementationSpecific
+          backend:
+            service: 
+              name: drive-client-service
+              port:
+                number: 3000                      
+                        

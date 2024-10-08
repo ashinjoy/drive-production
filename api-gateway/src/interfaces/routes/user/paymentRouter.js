@@ -5,7 +5,7 @@ import { TRIP_SERVICE } from "../../../config/constants/proxyTarget.js";
 const paymentRouter = express.Router();
 
 paymentRouter.use(createProxyMiddleware({
-    target:'http://localhost:3005/payment',
+    target:'http://localhost:3005/payment/',
     changeOrigin: true,
   })
 );

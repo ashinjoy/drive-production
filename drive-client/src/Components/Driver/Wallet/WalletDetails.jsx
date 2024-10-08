@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { IoAddCircle } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 import { getDriverWalletDetailService } from '../../../Features/Driver/driverService';
-
-
-
+import { Pagination } from '@mui/material';
 function WalletDetails() {
+  const [totalPages,setTotalPages] = useState(null)
+  const [currentPage,setCurrentPage] = useState(1)
   const [walletDetails,setWalletDetails] = useState({
     walletBalance:0,
     walletHistory:[]
   })
   const {driver} = useSelector(state=>state.driver)
+
+  const handleChange =(evt,value)=>{
+setCurrentPage(value)
+  }
    useEffect(()=>{
     const getDriverWalletDetails = async ()=>{
-    const response =   await getDriverWalletDetailService(driver?.id)
+    const response =   await getDriverWalletDetailService({driverId:driver?.id,page:currentPage})
     console.log("response from api call",response);
     
     setWalletDetails((prev)=>({
@@ -21,17 +24,24 @@ function WalletDetails() {
       walletBalance:response.data?.driverBalance,
       walletHistory:response.data?.driverWalletHistory
     }))
-
+setTotalPages(Math.ceil(response?.data?.totalDocs/10))
     }
     getDriverWalletDetails()
 
-  },[])
+  },[currentPage])
+
+  useEffect(()=>{
+    console.log(totalPages);
+    
+  })
+
+
 
   return (
 <div className="fixed top-[1rem] left-[20%] w-[70rem] h-[95dvh] bg-white p-6 shadow-xl rounded-lg overflow-auto  border border-gray-200">
       <div className='flex justify-between'>
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Wallet History</h1>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">Balance:{walletDetails ? walletDetails?.walletBalance : 0}</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">Balance:{walletDetails ? Math.ceil(walletDetails?.walletBalance) : 0}</h1>
 
       </div> 
       <table className="min-w-full bg-white border border-gray-200 divide-y divide-gray-300">
@@ -53,7 +63,7 @@ function WalletDetails() {
                   transaction.amount > 0 ? "text-red-500" : "text-green-500"
                 }`}
               >
-                {transaction.amount}
+                {Math.ceil(transaction.amount)}
               </td>
               <td
                 className={`px-6 py-4 text-sm ${
@@ -66,6 +76,10 @@ function WalletDetails() {
           ))} 
         </tbody>
       </table>
+      <Pagination count={totalPages || 1}           
+        page={currentPage}
+        onChange={handleChange}
+        color="primary"/>
     </div>
 
   )

@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { getAllTripsService } from '../../../Features/Trip/tripService'
 import UserNavbar from '../../../Components/Navbar/UserNavbar'
 import TripCard from '../../../Components/TripCard/TripCard'
-import { getAllTripsService } from '../../../Features/Trip/tripService'
-import { useSelector } from 'react-redux'
+import  Pagination  from '@mui/material//Pagination'
 
 function TripHistory() {
-    const [tripDetails,settripDetails] = useState([])
-    const [pages,setPages] = useState(null)
+    const [tripDetails,setTripDetails] = useState([])
+    const [currentPage,setCurrentPage] = useState(1)
+    const [totalPages,setTotalPages] = useState(1)
     const {user} = useSelector(state=>state.user)
+    const handlePageChange = (evt,value)=>{
+      setCurrentPage(value)
+    }
     useEffect(()=>{
         const getAllTrips=async()=>{
-        const response = await getAllTripsService(user?.id)        
-        settripDetails(response?.getTripDetails)
-        setPages(new Array(response?.docsCount))
+          try {
+            const response = await getAllTripsService({userId:user?.id,page:currentPage})         
+            setTripDetails(response?.tripDetails)
+            setTotalPages(Math.ceil(response?.totalDocs/6))
+          } catch (error) {
+            console.error(error);
+            throw error
+          }
         }
         getAllTrips()
-    },[])
+    },[currentPage])
   return (
     <>
     <UserNavbar/>
@@ -39,25 +49,10 @@ function TripHistory() {
         price={trip?.fare}
         status={trip?.tripStatus}
         id = {trip?._id}
+        key={trip._id}
       />)
        })} 
-       <div className='flex flex-row gap-3'>
-       {/* <span className='w-[3rem] h-[2rem] rounded-sm border-2 shadow-sm bg-slate-300 text-black text-center'>
-      prev
-    </span>
-    <span className='w-[3rem] h-[2rem] rounded-sm border-2 shadow-sm bg-slate-300 text-black text-center'>
-      1
-    </span>
-    <span className='w-[3rem] h-[2rem] rounded-sm border-2 shadow-sm bg-slate-300 text-black text-center'>
-      2
-    </span>
-    <span className='w-[3rem] h-[2rem] rounded-sm border-2 shadow-sm bg-slate-300 text-black text-center'>
-      next
-    </span> */}
-    
-
-    </div>
-    
+       <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color='primary' />
     </div>
 
     </>

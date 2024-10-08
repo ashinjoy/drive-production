@@ -15,7 +15,7 @@ import { GiJourney } from "react-icons/gi";
 import { FaWallet } from "react-icons/fa6";
 
 import { MdPayments ,MdPerson } from "react-icons/md";
-import { resetTripDetails } from "../../Features/Trip/tripSlice";
+import { resetTripDetails, setPaymentInfo } from "../../Features/Trip/tripSlice";
 import { current } from "@reduxjs/toolkit";
 import { logoutAction } from "../../Features/Driver/driverActions";
 
@@ -52,10 +52,14 @@ function DriverNavBar() {
       notificationDurationRef.current = setTimeout(() => {
         setOpenNotification(false);
       }, 13000);
+      // return
     };
     if (token && driver) {
       socket?.emit("driver-connected", driver.id);
+      console.log('entru in sockert driver connect');
+      
       socket?.on("ride-request", (tripData) => {
+        console.log('ideidjd,indeid ride-request=======>');
         handleRideRequest(tripData);
       });
     }
@@ -66,47 +70,11 @@ function DriverNavBar() {
   }, [socket, chatSocket]);
 
   useEffect(() => {
-    // if (token && driver && tripDetail) {
-    //   if (navigator.geolocation) {
-    //     navigator.geolocation?.watchPosition(
-    //       (pos) => {
-    //         const drivercooordinates = [
-    //           pos?.coords?.longitude,
-    //           pos?.coords?.latitude,
-    //         ];
-
-    //         setDriverLive(drivercooordinates);
-    //         socket?.emit("location-update", {
-    //           pos,
-    //           userId: tripDetail?.userId,
-    //         });
-    //       },
-    //       (err) => {
-    //         console.error(err);
-    //       },
-    //       {
-    //         enableHighAccuracy: false,
-    //         maximumAge: 0,
-    //       }
-    //     );
-    //   }
-    // }
     if(!token || !driver || !tripDetail){
       return
     }
-
-    
-    
-    
       liveIntervalRef.current =   setInterval(()=>{
       if(arrayIndexRef.current < tripCoordinates.length){
-        // console.log('inside the interval');
-        
-        // console.log("tripcoord",tripCoordinates);
-        // console.log('started',startRide);
-// if near pickup when start button appear the car hould stop and confirm pickup then only car should move
-// console.log("startRide inside the innterval",startRide);
-
 if(startRide){
   console.log('start Ride');
   console.log('entered inside the condition');
@@ -138,7 +106,7 @@ console.log('outdide  the condition');
        socket?.emit("location-update", {
                    liveLocation:tripCoordinates[arrayIndexRef.current],
                    userId: tripDetail?.userId,
-                })
+                  })
     arrayIndexRef.current++
 
       }else{
@@ -152,6 +120,12 @@ console.log('outdide  the condition');
         clearInterval(liveIntervalRef.current)
         dispatch(resetTripDetails())
       })
+      socket?.on('payment-update',(data)=>{
+        console.log('inside the paymet');
+        console.log('data',data);
+        
+        dispatch(setPaymentInfo(data))
+      })
       return ()=>{
         clearInterval(liveIntervalRef.current)
         socket?.off('cancel-ride')
@@ -161,74 +135,12 @@ console.log('outdide  the condition');
 
 
 
-    // useEffect(()=>{
-    //   if(driverLive.length <= 0){
-    //     return 
-    //   }
-    //   const pickup = tripDetail?.startLocation?.coordinates
-    //   const dropOff = tripDetail?.endLocation?.coordinates
-    //   const approxDistanceFromPickUp = checkApproxDistance(driverLive,pickup)
-    //   console.log("appPickup",approxDistanceFromPickUp);
-    //   const approxDistanceFromDrop = checkApproxDistance(driverLive,dropOff)
-    //   console.log("appDropp",approxDistanceFromDrop);
-    //   if(approxDistanceFromPickUp < 200){
-    //     setStartRide(true)  
-    //   }
-    // },[driverLive])
 
-    // const checkApproxDistance = (currentLocation,destination)=>{
-    //   if(!currentLocation || !currentLocation.length > 0 || !destination || !destination.length > 0){
-    //     return
-    //   }
-    //   const distance = turf.distance(currentLocation, destination, {
-    //     units: "meters",
-    //   });
 
-    //   console.log(distance);
-    // }
 
   return (
     <>
-      {/* <nav className="flex flex-col min-h-screen gap-11 items-center  max-w-[12rem]  bg-white border border-gray-300 bg-gradient-to-t from-yellow-50 to-white text-black rounded-md shadow-xl p-3">
-        <div>
-          <img src="/assets/logo-cl.png" alt="logo" />
-        </div>
-        <div className="flex justify-between items-center">
-        <NavLink className={"flex gap-2 text-lg font-semibold"}>
-          <MdSpaceDashboard className="mt-1" />
-          DashBoard
-        </NavLink>
-        </div>
-        <div className="flex justify-between">
-        <NavLink className={"flex gap-2 text-lg font-bold"} to="/driver/trip">
-          <GiJourney className="mt-1" />
-          Trip
-        </NavLink>
-        </div>
-        <NavLink className={"flex gap-2 text-lg font-bold"} to="/driver/wallet">
-          <FaWallet className="mt-1" />
-          Wallet
-        </NavLink>
-        <NavLink className={"flex gap-2 text-lg font-bold"}>
-          <MdPayments className="mt-1" />
-          Payments
-        </NavLink>
-        <NavLink
-          className={"flex gap-2 text-lg font-bold"}
-          to="/driver/profile"
-        >
-          <MdPayments className="mt-1" />
-          Profile
-        </NavLink>
-      </nav>
-      <AnimatePresence mode="wait">
-        {openNotification && (
-          <RideRequestNotifications
-            trip={trip}
-            setOpenNotification={setOpenNotification}
-          />
-        )}
-      </AnimatePresence> */}
+     
       <nav className="fixed flex flex-col min-h-screen gap-6 items-center max-w-[12rem]   rounded-sm border-r-2  shadow-md p-3">
   <div className="flex items-center justify-center w-full">
     <img src="/assets/logo-cl.png" alt="logo" className="w-full " />
@@ -270,7 +182,7 @@ console.log('outdide  the condition');
             setOpenNotification={setOpenNotification}
           />
         )}
-      </AnimatePresence> 
+  </AnimatePresence> 
 
     </>
   );

@@ -3,22 +3,16 @@ export class GetNearByDriverUseCase {
     this.userRepository = new dependencies.repository.MongoUserRepository();
     this.driverRepository = new dependencies.repository.MongoDriverRepository();
   }
-  async execute(userId, pickupLocation) {
+  async execute(pickupLocation) {
     try {
       
       const parsedLongitude = parseFloat(pickupLocation?.pickupLongitude);
       const parsedLatitude = parseFloat(pickupLocation?.pickupLatitude);
-
       const pickupCoordinates = [parsedLongitude, parsedLatitude];
-
-      const nearestDriver =
-        await this.driverRepository.findNearstDriversAvailable(
-          pickupCoordinates
-        );
-      console.log("nearest", nearestDriver);
-      return nearestDriver;
+      return  await this.driverRepository.findNearstDriversAvailable(pickupCoordinates); 
     } catch (error) {
       console.error(error);
+      throw error
     }
   }
 }

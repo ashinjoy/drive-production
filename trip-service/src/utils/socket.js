@@ -6,35 +6,39 @@ let io;
 export const socketConnection = async (httpServer) => {
   try {
     io = new Server(httpServer, {
+      path:"/socket.io/trip",
       cors: {
-        origin: ["http://localhost:3001", "http://localhost:3000"],
+        origin:"http://localhost:3000",
       },
     });
     io.on("connection", (socket) => {
-      console.log('connected to the soccket server successFully');
       socket.on("driver-connected", (driverId) => {
-        driverAndSocketId.set(driverId, socket.id);
-        console.log("driver-socket-connected",driverId,socket.id);
-        
+        driverAndSocketId.set(driverId, socket.id)
+        socket.join(driverId)        
       });
       socket.on("user-connected", (userId) => {
-        console.log("user-connected success to trip-srv",userId, socket.id);
         userAndSocketId.set(userId, socket.id);
-        
+        socket.join(userId)
       });
       socket.on("location-update", (data) => {
         const userIdToString = data?.userId.toString();
         socket.to(userAndSocketId.get(userIdToString)).emit("live-location", data);
       });
+        socket.on('nearbyPickup',(data)=>{
+        socket.to(data?.userId).emit('nearbyRide',data)
+      })
 
-        socket.on('ride-started',(data)=>{
-        const userId = data?.userId
-        socket.to(userAndSocketId.get(userId)).emit('ride-start',data)
+      socket.on('start-ride',(data)=>{
+        socket.to(data.userId).emit('ride-start','started')
       })
 
       socket.on('ride-complete',(data)=>{
         const userId = data?.userId
         socket.to(userAndSocketId.get(userId)).emit('ride-complete',data)
+      })
+
+      socket.on('ride-start',(data)=>{
+        socket.to('userID')
       })
 
     });
@@ -44,18 +48,26 @@ export const socketConnection = async (httpServer) => {
 };
 
 export const notifyDriver = (event, notification, driverId) => {
-  const driverIdToString = driverId.toString();
-  io.to(driverAndSocketId.get(driverIdToString)).emit(event, notification);
-  return;
+  
+    const driverIdToString = driverId.toString();
+    io.to(driverIdToString).emit(event,notification)
+    return;
 };
 
 export const userNotify = (event, data, userId) => {
 
   
-  const usereIdtoString = userId.toString();
+  // const usereIdtoString = userId.toString();
   
 
 
-  io.to(userAndSocketId.get(usereIdtoString)).emit(event, data);
+  // io.to(userAndSocketId.get(usereIdtoString)).emit(event, data);
+  console.log('usersID',userId);
+  
+  io.to(userId.toString()).emit(event,data)
   return;
 };
+
+export const emitEvent = (event,data,userId)=>{
+  io.to(userId).emit(event,data)
+}

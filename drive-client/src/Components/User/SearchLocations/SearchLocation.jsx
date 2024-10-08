@@ -1,38 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
-import { FaLocationArrow } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-
-import SuggesstionBox from "../SuggestionBox/SuggesstionBox";
-import { UserPrivate } from "../../../Utils/Axios/userInterceptor";
 import { Geocoder } from "@mapbox/search-js-react";
-import { seacrhNearByDriver } from "../../../Features/Trip/tripActions";
 import { searchLocationContext } from "../../../Context/UserSearchContext";
+import { UserPrivate } from "../../../Utils/Axios/userInterceptor";
+import { seacrhNearByDriver } from "../../../Features/Trip/tripActions";
+import { FaLocationArrow } from "react-icons/fa6";
+import SuggesstionBox from "../SuggestionBox/SuggesstionBox";
+import { toast } from "react-toastify";
 
-// import ListVehiclePriceDetails from "../Trip/ListVehiclePriceDetails";
 
-function SearchLocation({isSearch,setSearch}) {
+function   SearchLocation({setSearch}) {
   const {
+    selectPickupLocation,
     selectDropOffLocation,
     pickUpCoords,
     dropCoords,
-    selectPickupLocation,
     pickupLocation,
-    setPickupLocation,
     dropLocation,
+    setPickupLocation,
     setDropLocation,
   } = useContext(searchLocationContext);
 
   const [isPickUpSuggestion, setPickupSuggestion] = useState(false);
-
-  // const [pickupLocation, setPickupLocation] = useState("");
-  // const [isSearch, setSearch] = useState(false);
-  // const [dropLocation, setDropLocation] = useState("");
-
   const [suggestions, setSuggestions] = useState([]);
-
   const { user } = useSelector((state) => state.user);
   const { additionalSearchMetaData } = useSelector((state) => state.trip);
-
   const dispatch = useDispatch();
 
   const handlePickUpLocation = async (e) => {
@@ -80,35 +72,28 @@ function SearchLocation({isSearch,setSearch}) {
           pos?.coords?.latitude,
         ]}`
       );
-      console.log(
-        "pickup",
-        response?.data?.searchResult?.properties?.full_address
-      );
-      setPickupLocation(response?.data?.searchResult?.properties?.full_address);
+      setPickupLocation(response.data?.searchResult?.properties?.full_address);
       selectPickupLocation([pos?.coords?.longitude, pos?.coords?.latitude]);
+    },(err)=>{
+      toast('Something Went Wrong! Unable to Fecth Location')
     });
   };
 
   useEffect(() => {
     if (additionalSearchMetaData) {
       setSearch(true);
-    } else {
-      console.log("No metdata");
-    }
+      return
+    } 
   }, [additionalSearchMetaData]);
 
-  useEffect(()=>{
-    console.log("isSearch clicked",isSearch);
-    
 
-  },[isSearch])
 
   return (
     <>
       <div className="flex w-[34%]">
         <div className="mt-[7rem] ml-[2rem]  ">
           <div className="w-[100%] h-auto p-3  shadow-xl border-2 border-slate-300 rounded-lg bg-white flex flex-col gap-3">
-            <h1 className="font-medium text-xl text-gray-700">Start Ride</h1>
+            <h1 className="font-bold text-2xl   text-gray-700">Start Ride</h1>
             <form action="" onSubmit={handleSearchRide}>
               <div className="flex flex-col w-full max-w-md mx-auto relative">
                 <label
@@ -117,19 +102,19 @@ function SearchLocation({isSearch,setSearch}) {
                 >
                   Pickup Location
                 </label>
-                <div className="flex h-10 items-center border-2 border-gray-300 rounded-md overflow-hidden shadow-md focus-within:border-blue-500 transition duration-200">
+                <div className="flex h-10 items-center border-2 border-gray-300 rounded-md  overflow-hidden shadow-sm focus-within:border-black transition duration-200">
                   <input
                     type="text"
                     id="pickup"
                     placeholder="Enter pickup location"
-                    className="w-full h-10 px-4 text-gray-700 outline-none flex-1"
+                    className="w-full h-10 px-4  text-black font-normal outline-none  flex-1 placeholder-black"
                     onFocus={() => setPickupSuggestion(true)}
                     value={pickupLocation}
                     onChange={handlePickUpLocation}
                   />
                   <button
                     type="button"
-                    className="h-12 w-12 text-black flex items-center justify-center transition duration-200"
+                    className="h-9 w-9 text-black flex items-center justify-center   transition duration-200"
                     onClick={handleCurrentLocation}
                   >
                     <FaLocationArrow />
@@ -158,6 +143,9 @@ function SearchLocation({isSearch,setSearch}) {
                   onRetrieve={handleResult}
                   onChange={handleDropoffLocation}
                   accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+                  style={{
+                    backgroundColor:'#cbd5e1'
+                  }}
                 />
               </div>
 
@@ -171,14 +159,6 @@ function SearchLocation({isSearch,setSearch}) {
           </div>
         </div>
       </div>
-      {/* {isSearch && (
-        <ListVehiclePriceDetails
-          pickUpCoords={pickUpCoords}
-          dropCoords={dropCoords}
-          pickupLocation={pickupLocation}
-          dropLocation={dropLocation}
-        />
-      )} */}
     </>
   );
 }

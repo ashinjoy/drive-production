@@ -3,11 +3,12 @@ import { consumeManager } from "./consumeMessages.js";
 export class KafkaClient {
   constructor() {
     this.kafka = new Kafka({
-      clientId: "chat-service",
+      clientId: "payment-service",
       brokers: [
-        "kafka-0.kafka-headless.kafka.svc.cluster.local:9092",
-        "kafka-1.kafka-headless.kafka.svc.cluster.local:9092",
-        "kafka-2.kafka-headless.kafka.svc.cluster.local:9092"
+        // "kafka-0.kafka-service.kafka.svc.cluster.local:9092",
+        // "kafka-1.kafka-service.kafka.svc.cluster.local:9092",
+        // "kafka-2.kafka-service.kafka.svc.cluster.local:9092"
+        "127.0.0.1:9092"
       ],
     });
     this.producer = this.kafka.producer();

@@ -19,7 +19,6 @@ import UsersList from "../Pages/Admin/UsersList.jsx";
 import UserProtected from "./UserProtected.js";
 import RidePage from "../Pages/User/Trip/RidePage.jsx";
 import Trip from "../Pages/Driver/Trip/Trip.jsx";
-import LiveMapUpdates from "../Components/User/Maps/LiveMap.jsx";
 import LiveLocation from "../Pages/User/Trip/LiveLocation.jsx";
 import TripHistory from "../Pages/User/TripHistory/TripHistory.jsx";
 import PaymentSucess from "../Pages/User/Payment/PaymentSucess.jsx";
@@ -28,9 +27,7 @@ import WalletPage from "../Pages/User/Profile/WalletPage.jsx";
 import AddContacts from "../Pages/User/AddContacts/AddContacts.jsx";
 import DriverWalletPage from "../Pages/Driver/Wallet/DriverWalletPage.jsx";
 import TripReport from "../Pages/Admin/TripReport.jsx";
-// import Chat from "../Components/Driver/Chat/Chat.jsx";
-// import ChatPage from "../Pages/Driver/Chat/ChatPage.jsx";
-// import UserSearchContext from "../Context/UserSearchContext.js";
+import TripProtectedRoute from "./TripProtectedRoute.jsx";
 
 function RouteConfig() {
   const router = createBrowserRouter([
@@ -52,51 +49,62 @@ function RouteConfig() {
     },
     {
       path: "/search-ride",
-      
-      element:( <UserProtected>
-      <RidePage />
-      </UserProtected>
-      )
+
+      element: (
+        <UserProtected>
+          <TripProtectedRoute>
+            <RidePage />
+          </TripProtectedRoute>
+        </UserProtected>
+      ),
     },
     {
       path: "/trip",
-      element: ( <UserProtected>
-        <LiveLocation/>
+      element: (
+        <UserProtected>
+          <LiveLocation />
         </UserProtected>
-        )
+      ),
     },
     {
-      path:'/trip-history',
-      element:(<UserProtected>
-              <TripHistory/>
-              </UserProtected>)
-      
-    },
-    {
-      path:'/trip-detail/:tripId',
-      element:(<UserProtected>
-              <TripDetailPage/>
-              </UserProtected>)
-      
-    },
-    {
-      path:'/payment-success',
-      element:(<UserProtected>
-          <PaymentSucess/>
+      path: "/trip-history",
+      element: (
+        <UserProtected>
+          <TripHistory />
         </UserProtected>
-      )
+      ),
     },
     {
-      path:'/wallet',
-      element:(<UserProtected>
-        <WalletPage/>
-      </UserProtected>)
+      path: "/trip-detail/:tripId",
+      element: (
+        <UserProtected>
+          <TripDetailPage />
+        </UserProtected>
+      ),
     },
     {
-      path:'/safety',
-      element:(<UserProtected>
-       <AddContacts/>
-      </UserProtected>)
+      path: "/payment-success",
+      element: (
+        <UserProtected>
+          <PaymentSucess />
+        </UserProtected>
+      ),
+    },
+    {
+      path: "/wallet",
+      element: (
+        <UserProtected>
+          <WalletPage />
+        </UserProtected>
+      ),
+    },
+    {
+      path: "/add-contacts",
+      element: (
+        <UserProtected>
+          <AddContacts />
+        </UserProtected>
+      ),
     },
     {
       path: "/driver",
@@ -131,40 +139,37 @@ function RouteConfig() {
         },
         {
           path: "approval",
-          element: <Approval/>,
+          element: <Approval />,
         },
 
         {
           path: "trip",
           element: (
             <DriverProtected>
-              <Trip/>
+              <Trip />
             </DriverProtected>
           ),
         },
         {
-          path:'wallet',
-          element:(
+          path: "wallet",
+          element: (
             <DriverProtected>
-              <DriverWalletPage/>
+              <DriverWalletPage />
             </DriverProtected>
-          )
-        }
-        
-        
+          ),
+        },
       ],
     },
     {
       path: "/admin",
       children: [
         {
-          path:'dashboard',
-          element:(
-          <AdminProtected>
-          <AdminDashBoard/>
-          </AdminProtected>
-          )
-
+          path: "dashboard",
+          element: (
+            <AdminProtected>
+              <AdminDashBoard />
+            </AdminProtected>
+          ),
         },
         {
           path: "login",
@@ -187,7 +192,7 @@ function RouteConfig() {
           ),
         },
         {
-          path: "viewDriver-Detail/:driverId",
+          path: "viewdriver-detail/:driverId",
           element: (
             <AdminProtected>
               <DriverDetailsPage />
@@ -195,22 +200,21 @@ function RouteConfig() {
           ),
         },
         {
-          path: "Users-list",
+          path: "users-list",
           element: (
             <AdminProtected>
-              <UsersList/>
+              <UsersList />
             </AdminProtected>
           ),
         },
         {
-          path:'trip-report',
-          element:(
+          path: "trip-report",
+          element: (
             <AdminProtected>
-              <TripReport/>
+              <TripReport />
             </AdminProtected>
-            
-          )
-        }
+          ),
+        },
       ],
     },
   ]);

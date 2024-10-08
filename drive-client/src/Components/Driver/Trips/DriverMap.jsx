@@ -1,26 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import "mapbox-gl/dist/mapbox-gl.css";
-import Map, { Marker, Source, Layer } from "react-map-gl";
 import { useDispatch, useSelector } from "react-redux";
+import { useSocket } from "../../../Hooks/socket";
+import Map, { Marker, Source, Layer } from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 import axios from "axios";
 import * as turf from "@turf/turf";
+import { driverLiveLocation } from "../../../Context/DriverLocation"
+import {driverActive,driverInctive} from "../../../Features/Driver/driverActions";
+import { finishRide } from "../../../Features/Trip/tripActions";
 import { FaCar } from "react-icons/fa";
 import { MdLocationOn } from "react-icons/md";
 import { MdLocationPin } from "react-icons/md";
-
-import { driverLiveLocation } from "../../../Context/DriverLocation";
-import {
-  driverActive,
-  driverInctive,
-} from "../../../Features/Driver/driverActions";
-import { finishRide } from "../../../Features/Trip/tripActions";
-import { useSocket } from "../../../Hooks/socket";
 import { AiOutlineBell } from "react-icons/ai";
-import { FaComments, FaPlay } from "react-icons/fa";
+import { FaComments} from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import DriverNearByDropOff from "../Notifications/DriverNearByDropOff";
 import Chat from "../../Chat/Chat";
 import RideStartConfirmationModal from "../Modal/RideStartConfirmationModal";
+
 
 function DriverMap() {
   const mapContainerRef = useRef(null);
@@ -28,32 +25,33 @@ function DriverMap() {
   const [senderId, setSenderId] = useState(null);
   const { driver, currentStatus } = useSelector((state) => state.driver);
   const { tripDetail, message } = useSelector((state) => state.trip);
-  const { driverLive, setTripCoordintes, startRide, setStartRide } =
-    useContext(driverLiveLocation);
+  const { driverLive, setTripCoordintes, startRide, setStartRide } = useContext(driverLiveLocation);
   const dispatch = useDispatch();
-
   const [openChat, setOpenChat] = useState(false);
-
   const [pickup, setPickUp] = useState([]);
   const [dropOff, setDropoff] = useState([]);
   const [driverCoords, setDriverCoords] = useState([]);
-  const [viewState, setViewState] = useState({});
+  const [viewState, setViewState] = useState({
+    longitude:76.32143838937851,
+    latitude:9.940986128127982,
+    zoom:12
+  });
   const [route, setRoute] = useState(null);
-
   const [rideStarted, setRideStarted] = useState(false);
   const [endRide, setEndRide] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
-
   const { socket } = useSocket();
+// const rideIntiated = localStorage.getItem('rideInitiated')
   useEffect(() => {
     if (!tripDetail) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((pos) => {
-          setViewState({
-            longitude: pos?.coords?.longitude,
-            latitude: pos?.coords?.latitude,
-            zoom: 13,
-          });
+          setViewState((prev)=>({
+            ...prev,
+            longitude:pos?.coords?.longitude,
+            latitude:pos?.coords?.latitude,
+            zoom:13
+          }));
         });
       }
     }
@@ -67,7 +65,10 @@ function DriverMap() {
   }, [tripDetail]);
 
   useEffect(() => {
-    if (tripDetail) {
+    if (tripDetail ) {
+      // localStorage.setItem('rideInitiated')
+      console.log('inside the useEffect of the location');
+      
       setPickUp(tripDetail?.startLocation?.coordinates);
       setDropoff(tripDetail?.endLocation?.coordinates);
       setDriverCoords(tripDetail?.driverId?.currentLocation?.coordinates);
@@ -75,10 +76,10 @@ function DriverMap() {
         const response = await axios.get(
           `https://api.mapbox.com/directions/v5/mapbox/driving/${tripDetail?.driverId?.currentLocation?.coordinates[0]},${tripDetail?.driverId?.currentLocation?.coordinates[1]};${tripDetail?.startLocation?.coordinates[0]},${tripDetail?.startLocation?.coordinates[1]};${tripDetail?.endLocation?.coordinates[0]},${tripDetail?.endLocation?.coordinates[1]}?geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_TOKEN}`
         );
-        console.log(
-          "Coordintaes For Testing Purpose of Live Location ===>",
-          response.data
-        );
+        // console.log(
+        //   "Coordintaes For Testing Purpose of Live Location ===>",
+        //   response.data
+        // );
         const routeInfo = response.data;
         setRoute(routeInfo?.routes[0]?.geometry);
         setTripCoordintes(routeInfo?.routes[0]?.geometry?.coordinates);
@@ -130,10 +131,10 @@ function DriverMap() {
       if (!rideStarted) {
         setStartRide(true);
         setRideStarted(true);
-        socket.emit("ride-started", {
-          userId: tripDetail?.userId,
-          duration: tripDetail?.duration,
-        });
+        // socket.emit("nearbyPickup", {
+        //   userId: tripDetail?.userId,
+        //   duration: tripDetail?.duration,
+        // });
       }
     } else if (dropDestination < 0.1) {
       completeJourney();
@@ -141,7 +142,7 @@ function DriverMap() {
       setEndRide(false);
       setStartRide(false);
     }
-  }, [socket, driverLive, tripDetail]);
+  }, [socket,driverLive,tripDetail]);
 
   const checkApproxDistance = (driverLocation, destination) => {
     if (
@@ -189,7 +190,7 @@ function DriverMap() {
   };
 
   const verifyRide = () => {
-    setStartRide(false);
+    // setStartRide(false);
     setShowOtp(true);
   };
 
@@ -200,7 +201,7 @@ function DriverMap() {
   };
 
   useEffect(() => {
-    if (message == "Ride Completed SuccessFully") {
+    if (message === "Ride Completed SuccessFully") {
       setEndRide(true);
     }
   }, [socket, message, tripDetail]);
@@ -260,23 +261,16 @@ function DriverMap() {
               </Source>
             )}
           </Map>
-
-          <button
-            className="absolute bottom-8 right-8 bg-green-600 text-white rounded-full p-4 shadow-lg hover:bg-green-700 transition-transform transform hover:scale-105"
-            onClick={() => verifyRide()}
-          >
-            <FaPlay className="text-2xl" />
-          </button>
         </div>
 
         <div className="w-[24rem] p-4 flex flex-col space-y-4 bg-gray-100">
           <div className="bg-white rounded-lg p-4 shadow-md flex flex-col items-center">
             <h2 className="text-2xl font-bold text-gray-800">Driver Status</h2>
             <p className="text-lg text-gray-600 mt-2">
-              You are currently{" "}
+              {/* You are currently{" "}
               {currentStatus?.currentStatus === "active"
                 ? "Active"
-                : "Inactive"}
+                : "Inactive"} */}
             </p>
             <button
               className={`mt-4 rounded-full w-full h-14 text-xl font-bold shadow-lg transition-transform duration-200 ${
@@ -311,16 +305,7 @@ function DriverMap() {
           </div>
         </div>
       </div>
-
-      {/* Modals and Notifications */}
-      <AnimatePresence mode="wait">
-        {/* {openNotification && ( */}
-        {/* <RideRequestNotifications */}
-        {/* trip={trip}
-           setOpenNotification={setOpenNotification}
-        /> */}
-        {/* )} */}
-        {openChat && (
+      {openChat && (
           <Chat
             driver={driver}
             recieverId={recieverId}
@@ -328,6 +313,7 @@ function DriverMap() {
             setOpenChat={setOpenChat}
           />
         )}
+      <AnimatePresence mode="wait">
         {endRide && <DriverNearByDropOff setEndRide={setEndRide} />}
       </AnimatePresence>
     </div>

@@ -2,17 +2,17 @@ export class GetTripHistoryUseCase{
     constructor(dependencies){
     this.tripRepository = new dependencies.repository.MongoTripRepository()
     }
-    async execute(userId){
+    async execute(userId,page){
         try {
-          const getTripHistoryByUserId  =   await this.tripRepository.findAllTrips(userId)
-          const getTripCountPerUser = await this.tripRepository.findTripCountPerUser(userId)
+          const getUsersTrips  =   await this.tripRepository.getUsersTrip(userId,page)
+          const getUsersTotalTripCount = await this.tripRepository.getUsersTotalTripCount(userId)
           return {
-            getTripHistoryByUserId,
-            getTripCountPerUser
+            getUsersTrips,
+            getUsersTotalTripCount
           }
         } catch (error) {
             console.error(error);
-            
+            throw error
         }
     }
 }

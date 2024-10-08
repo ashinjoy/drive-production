@@ -3,6 +3,7 @@ import { UserCreatedConsumeController } from "../interface/controllers/consumeCo
 import { UserUpdateController } from "../interface/controllers/consumeController/userUpdateController.js"
 import { DriverCreatedConsumeController } from "../interface/controllers/consumeController/driverCreatedController.js"
 import { DriverUpdatedConsumeController } from "../interface/controllers/consumeController/driveUpdatedController.js"
+import { TripUpdateController } from "../interface/controllers/consumeController/tripUpdateController.js"
 
 export class consumeManager{
     constructor(){
@@ -10,6 +11,7 @@ export class consumeManager{
         this.consumeUpdateUserController = new UserUpdateController(dependencies)
         this.consumeDriverCreatedController = new DriverCreatedConsumeController(dependencies)
         this.consumeDriverUpdatedController = new DriverUpdatedConsumeController(dependencies)
+        this.consumeTripUpdateController = new TripUpdateController(dependencies)
 
     }
     async consumer({type,value}){
@@ -31,6 +33,8 @@ export class consumeManager{
                 case 'DRIVER_UPDATED':
                         await this.consumeDriverUpdatedController.driverUpdatedConsumer(data)
                         break
+                case 'PAYMENT_COMPLETED':
+                        await this.consumeTripUpdateController.tripUpdatedConsumer(data)                      
                 default:
                     const error = new Error('No Type mentioned')
             }

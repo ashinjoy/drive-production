@@ -10,19 +10,17 @@ import { reset } from "../../../Features/User/userSlice";
 
 
 function OtpModal({ email, setShowModal }) {
-  console.log('email',email)
+  const {socket} = useSocket()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [otpInp, setOtp] = useState(new Array(4).fill(""));
   const otpBoxReference = useRef([]);
   const [enableButton, setEnable] = useState(true);
   const [resendOtpEnable, setResendOtpEnable] = useState(true);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(60);
   const [restartTimer, setTimerRestart] = useState(false);
   const { user, error, message } = useSelector((state) => state.user);
-  const {socket} = useSocket()
-  
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleInput = (e, currIndex) => {
     const inputValue = e.target.value;
@@ -78,7 +76,6 @@ function OtpModal({ email, setShowModal }) {
             return prev - 1;
           } else {
             clearInterval(interval);
-            // setResendOtpEnable(true)
             return 0;
           }
         });

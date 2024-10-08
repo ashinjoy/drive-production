@@ -1,42 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getWalletHistoryService } from "../../../Features/User/userService";
 import { useSelector } from "react-redux";
-import {getDriverWalletHistoryService} from '../../../Features/Driver/driverService'
+import Pagination from '@mui/material/Pagination';
 
 function WalletHistory({userType, walletHistory, setWalletHistory }) {
   const { user } = useSelector((state) => state.user);
-  const {driver} = useSelector(state=>state.driver)
-  useEffect(() => {
-    if(userType == 'user'){
+  const [currentPage,setCurrentPage] = useState(1)
+  const [totalPages,setTotalPage] = useState(null)
+
+  const handleChange = (evt,value)=>{  
+  setCurrentPage(value)
+  }
+  useEffect(()=>{
+    if(userType === 'user'){
       const getWalletHistory = async () => {
-        const response = await getWalletHistoryService(user?.id);
-        console.log(response?.getHistory);
+        const response = await getWalletHistoryService({userId:user?.id,page:currentPage});
         setWalletHistory(response?.getHistory);
+        const TotalPages = Math.ceil(response?.totalDocs/10)
+        setTotalPage(TotalPages)
       };
       getWalletHistory();
       return
     }
-    if(userType == 'driver'){
-      const getDriverWalletHistory = async () => {
-        const response = await getDriverWalletHistoryService(driver?.id);
-        console.log(response?.getHistory);
-        setWalletHistory(response?.getHistory);
-      };
-      getDriverWalletHistory();
-      return
-    }
 
-    // if(userType == 'Admin'){
-    //   const getDriverWalletHistory = async () => {
-    //     const response = await getCompanyWalletHistoryService(driver?.id);
-    //     console.log(response?.getHistory);
-    //     setWalletHistory(response?.getHistory);
-    //   };
-    //   getDriverWalletHistory();
-    //   return
-    // }
-
-  }, []);
+  },[currentPage])
   return (
     <>
 <div className="fixed top-[8rem] right-12 w-[60rem] h-[75dvh] bg-white p-6 shadow-xl rounded-lg  overflow-auto border border-gray-200">
@@ -73,6 +60,10 @@ function WalletHistory({userType, walletHistory, setWalletHistory }) {
             </tr>
           ))}
         </tbody>
+      <Pagination count={totalPages || 1}           
+        page={currentPage}
+        onChange={handleChange}
+        color="primary"/>
       </table>
     </div>
     </>

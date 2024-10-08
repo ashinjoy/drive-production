@@ -13,13 +13,12 @@ import { distance } from 'framer-motion';
 
 function RideStartConfirmationModal({setShowOtp,setStartRide}) {
   const [otpInp, setOtp] = useState(new Array(4).fill(""));
-  const {socket} = useSocket()
+  // const {socket} = useSocket()
   const {message} = useSelector(state=>state.trip)
   const otpBoxReference = useRef([]);
   const dispatch = useDispatch()
-  const {driver} = useSelector((state)=>state.driver)
+  // const {driver} = useSelector((state)=>state.driver)
   const {tripDetail} = useSelector((state)=>state.trip)
-
   const handleInput = (e, currIndex) => {
     const inputValue = e.target.value;
     if (/^\d*$/.test(inputValue)) {
@@ -35,24 +34,27 @@ function RideStartConfirmationModal({setShowOtp,setStartRide}) {
   };
 
   const startJourney = () => {
-    console.log('otpInp',otpInp);
     const convertOtpToNumber = otpInp.join('')
-    dispatch(startTrip({tripOtp:convertOtpToNumber, driverId: driver?.id, tripId: tripDetail?._id }));
-    setShowOtp(false);
-    setStartRide(false)
-    // socket?.emit('ride-started',)
+    const verificationData = {tripOtp:convertOtpToNumber,tripId: tripDetail?._id }
+    dispatch(startTrip(verificationData));
+    // setShowOtp(false);
+    // setStartRide(false)
   };
 
   useEffect(()=>{
-    if(socket && message == 'Ride started SucessFully'){
-        const data = {
-            userId:tripDetail?.userId,
-            duration:tripDetail?.duration,
-            distance:tripDetail?.distance
-        }
-        socket?.emit('ride-start',data)
+    if( message === 'Ride started SucessFully'){
+      setStartRide(false)
+      setShowOtp(false)
+      return
+        // const data = {
+        //     userId:tripDetail?.userId,
+        //     duration:tripDetail?.duration,
+        //     distance:tripDetail?.distance,
+        //     tripStatus:'started'
+        // }
+        // socket?.emit('start-ride',data)
     }
-  },[message,socket])
+  },[message])
 
 
   return createPortal(
@@ -66,7 +68,7 @@ function RideStartConfirmationModal({setShowOtp,setStartRide}) {
           <div className="flex flex-col items-center">
            
             <h1 className="text-2xl font-semibold text-gray-800 mb-4">
-              Please Enter Your OTP
+               Enter OTP - Start Your Journey
             </h1>
             <div className="flex gap-3 mb-4">
               {otpInp.map((inp, index) => (

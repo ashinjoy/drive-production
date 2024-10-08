@@ -8,8 +8,7 @@ function LiveLocation() {
     <>
     <UserNavbar/>
     <BookingInfo/>
-    <LiveMapUpdates />
-   
+    <LiveMapUpdates/>
     </>
   )
 }

@@ -16,11 +16,9 @@ const createServer = () => {
   app.use(express.json());
 console.log('in the server');
 
-  app.use('/chat',chatRouter)
+  app.use('/api/chat',chatRouter)
  
-  
 
-//   app.use(ErrorHandling.errorHandler);
   return httpServer;
 };
 

@@ -5,8 +5,8 @@ import { DriverCreatedConsumeController } from "../interface/controllers/consume
 import { DriverUpdatedConsumeController } from "../interface/controllers/consumeController/driveUpdatedController.js"
 import {TripCreateConsumerController} from '../interface/controllers/consumeController/tripCreatedController.js'
 import { TripUpdateConsumerController } from "../interface/controllers/consumeController/tripUpdateController.js"
-import { CreatePaymentController } from "../interface/controllers/paymentController/createPaymentController.js"
-import { UpdatePaymentModecontroller } from "../interface/controllers/paymentController/updatePaymentController.js"
+import { CreatePaymentController } from "../interface/controllers/consumeController/createPaymentController.js"
+// import { UpdatePaymentModecontroller } from "../interface/controllers/paymentController/updatePaymentController.js"
 
 
 export class consumeManager{
@@ -18,7 +18,7 @@ export class consumeManager{
         this.consumeTripCreateController = new TripCreateConsumerController(dependencies)
         this.consumeTripUpdateController = new TripUpdateConsumerController(dependencies)
         this.createPaymentController = new CreatePaymentController(dependencies)
-        this.updatePaymentModecontroller = new UpdatePaymentModecontroller(dependencies)
+        // this.updatePaymentModecontroller = new UpdatePaymentModecontroller(dependencies)
 
     }
     async consumer({type,value}){

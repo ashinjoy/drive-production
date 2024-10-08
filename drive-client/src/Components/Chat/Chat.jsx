@@ -9,10 +9,7 @@ import { FaWindowClose } from "react-icons/fa";
 
 function Chat({ openChat, driver,user,setOpenChat }) {
   const {messages,setMessages} = useContext(MessageProvider)
-    console.log("prpopsssssssssssssssssss",driver); 
-    console.log("prpopsssssssssssssssssss",user); 
 
-    
   const [message, setMessage] = useState("");
   // const [messages,setMessages] = useState([])
   const [reciever,setReciever] = useState("")

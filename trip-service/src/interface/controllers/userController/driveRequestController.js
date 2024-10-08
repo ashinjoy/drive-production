@@ -1,8 +1,6 @@
 export class RideRequestController {
   constructor(dependencies) {
-    this.requestRideUseCase = new dependencies.useCase.RideRequestUseCase(
-      dependencies
-    );
+    this.requestRideUseCase = new dependencies.useCase.RideRequestUseCase(dependencies);
   }
   async requestRide(req, res, next) {
     try {
@@ -27,13 +25,13 @@ export class RideRequestController {
         !distance ||
         !duration
       ) {
-        const error = new Error("Incomplete Request");
+        const error = new Error();
+        error.message = "Incomplete Request"
         error.status = 400;
         throw error;
       }
-      const requestToDriver = await this.requestRideUseCase.execute(req.body);
-      console.log('requestDriver=>',requestToDriver);
-      res.status(200).json({tripdata:requestToDriver,createmessage:"Request Processing"})
+      await this.requestRideUseCase.execute(req.body);
+      res.status(200).json({sucess:true})
     } catch (error) {
       console.error(error);
       next(error);

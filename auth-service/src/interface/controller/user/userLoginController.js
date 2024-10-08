@@ -24,14 +24,14 @@ export class UserLoginController {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
         });
-        res
-          .status(201)
-          .json({
-            data,
-            accessToken,
-            message: "Google Authentication SuccessFull",
-          });
+        res.status(201).json({
+          data,
+          accessToken,
+          message: "Google Authentication SuccessFull",
+        });
       } else if (type === "email") {
+        console.log("hello9 hjdbhfbdshbhb");
+        
         const { email } = req.body;
         if (!email) {
           const error = new Error();

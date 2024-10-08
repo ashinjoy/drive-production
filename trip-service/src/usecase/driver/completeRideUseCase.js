@@ -9,13 +9,8 @@ export class CompleteRideUseCase {
   }
   async execute(tripId,userId){
     try {
-    
-        const dataToUpdate = {
-            tripStatus:'completed'
-        }
-       
-        
-       const completeRide =  await this.tripRepository.findTripByIdAndUpdate(tripId,dataToUpdate)
+        const dataToUpdate = {tripStatus:'completed'}
+        const completeRide =  await this.tripRepository.findTripByIdAndUpdate(tripId,dataToUpdate)
 
        const dataToPublish = {
         _id:completeRide?._id,
@@ -43,11 +38,10 @@ export class CompleteRideUseCase {
 
 
       userNotify('ride-complete',{fare:completeRide?.fare,distance:completeRide?.distance,duration:completeRide?.duration,isPaymentComplete:completeRide?.isPaymentComplete},userId)
-      
-
       return completeRide
     } catch (error) {
         console.error(error)
+        throw error
     }
   }
 }
